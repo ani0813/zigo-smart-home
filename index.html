@@ -1,763 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zigo — Smart Home Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zigo — Smart Home Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#086063;--teal-dark:#054849;--teal-light:#0a7a7d;
+  --cream:#EDE2DC;--cream-dark:#ddd0c8;--white:#fff;
+  --text-dark:#1a2b2b;--text-mid:#4a6060;--text-light:#7a9090;
+  --shadow:0 4px 24px rgba(8,96,99,.10);--shadow-lg:0 8px 40px rgba(8,96,99,.15);
+  --radius:12px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--text-dark);line-height:1.6}
 
-    :root {
-      --teal: #086063;
-      --teal-dark: #054849;
-      --teal-light: #0a7a7d;
-      --cream: #EDE2DC;
-      --cream-dark: #e0d3cc;
-      --white: #ffffff;
-      --text-dark: #1a2b2b;
-      --text-mid: #4a6060;
-      --text-light: #7a9090;
-      --shadow: 0 4px 24px rgba(8,96,99,0.10);
-      --shadow-lg: 0 8px 40px rgba(8,96,99,0.15);
-    }
+/* HEADER */
+header{position:sticky;top:0;z-index:200;background:var(--teal);height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 16px rgba(0,0,0,.18)}
+.logo{font-size:24px;font-weight:800;color:#fff;letter-spacing:2px;text-transform:uppercase;flex-shrink:0}
+.logo span{color:var(--cream)}
+nav{display:flex;align-items:center;gap:8px}
+nav a{color:rgba(255,255,255,.82);text-decoration:none;font-size:13px;font-weight:500;padding:6px 12px;border-radius:6px;transition:color .2s;white-space:nowrap}
+nav a:hover{color:#fff}
+.nav-cta{background:#fff;color:var(--teal)!important;font-weight:700!important;padding:7px 16px!important}
+.nav-cta:hover{background:var(--cream)!important}
 
-    html { scroll-behavior: smooth; }
+/* LANG SWITCHER */
+.lang-switcher{display:flex;gap:4px;background:rgba(255,255,255,.12);border-radius:6px;padding:3px}
+.lang-btn{background:none;border:none;color:rgba(255,255,255,.7);font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;padding:4px 9px;border-radius:4px;cursor:pointer;transition:all .18s;letter-spacing:.5px}
+.lang-btn.active{background:#fff;color:var(--teal)}
 
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background: var(--cream);
-      color: var(--text-dark);
-      line-height: 1.6;
-    }
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 60%,#033435 100%);color:#fff;padding:80px 24px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:var(--cream);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:20px}
+.hero h1{font-size:clamp(28px,5vw,58px);font-weight:800;line-height:1.15;margin-bottom:18px;letter-spacing:-1px}
+.hero h1 em{font-style:normal;color:var(--cream)}
+.hero p{font-size:16px;font-weight:300;color:rgba(255,255,255,.78);max-width:520px;margin:0 auto 36px}
+.hero-btn{display:inline-block;background:var(--cream);color:var(--teal);font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;padding:15px 36px;border-radius:8px;text-decoration:none;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.hero-btn:hover{background:#fff;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.hero-stats{display:flex;justify-content:center;gap:clamp(20px,5vw,60px);margin-top:56px;padding-top:36px;border-top:1px solid rgba(255,255,255,.12);flex-wrap:wrap}
+.stat-num{font-size:28px;font-weight:800;color:var(--cream);display:block}
+.stat-label{font-size:11px;font-weight:500;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px}
 
-    /* ── HEADER ── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--teal);
-      padding: 0 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.18);
-    }
-    .logo {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--white);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .logo span { color: var(--cream); }
-    nav a {
-      color: rgba(255,255,255,0.82);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-      margin-left: 32px;
-      letter-spacing: 0.5px;
-      transition: color 0.2s;
-    }
-    nav a:hover { color: var(--white); }
-    .nav-cta {
-      background: var(--white);
-      color: var(--teal) !important;
-      padding: 8px 20px;
-      border-radius: 6px;
-      font-weight: 700 !important;
-    }
-    .nav-cta:hover { background: var(--cream) !important; }
+/* STEPS */
+.steps-section{background:#fff;padding:64px 24px;text-align:center}
+.section-label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
+.section-title{font-size:clamp(24px,4vw,34px);font-weight:800;color:var(--text-dark);margin-bottom:8px;letter-spacing:-.5px}
+.section-sub{font-size:15px;color:var(--text-light);margin-bottom:48px}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;max-width:860px;margin:0 auto}
+.step-card{padding:32px 24px;border-radius:var(--radius);background:var(--cream);text-align:center}
+.step-num{width:44px;height:44px;background:var(--teal);color:#fff;font-size:18px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.step-card h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.step-card p{font-size:13px;color:var(--text-mid)}
 
-    /* ── HERO ── */
-    .hero {
-      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 60%, #033435 100%);
-      color: var(--white);
-      padding: 100px 40px 80px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.22);
-      color: var(--cream);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      border-radius: 20px;
-      margin-bottom: 24px;
-    }
-    .hero h1 {
-      font-size: clamp(36px, 5vw, 62px);
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 20px;
-      letter-spacing: -1px;
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--cream);
-    }
-    .hero p {
-      font-size: 18px;
-      font-weight: 300;
-      color: rgba(255,255,255,0.78);
-      max-width: 560px;
-      margin: 0 auto 40px;
-    }
-    .hero-btn {
-      display: inline-block;
-      background: var(--cream);
-      color: var(--teal);
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      padding: 16px 40px;
-      border-radius: 8px;
-      text-decoration: none;
-      letter-spacing: 0.3px;
-      transition: all 0.2s;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .hero-btn:hover {
-      background: var(--white);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-    }
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-      margin-top: 64px;
-      padding-top: 40px;
-      border-top: 1px solid rgba(255,255,255,0.12);
-    }
-    .stat-item { text-align: center; }
-    .stat-num {
-      font-size: 32px;
-      font-weight: 800;
-      color: var(--cream);
-      display: block;
-    }
-    .stat-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.6);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+/* EMAIL GATE */
+.gate-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:center;justify-content:center;padding:16px}
+.gate-overlay.open{display:flex}
+.gate-box{background:#fff;border-radius:20px;padding:clamp(28px,5vw,48px);max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center}
+.gate-icon{font-size:48px;margin-bottom:16px}
+.gate-box h2{font-size:22px;font-weight:800;color:var(--text-dark);margin-bottom:8px}
+.gate-box p{font-size:14px;color:var(--text-mid);margin-bottom:28px}
+.gate-form{display:flex;flex-direction:column;gap:12px;text-align:left}
+.gate-input{padding:12px 14px;border:1.5px solid var(--cream-dark);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:14px;color:var(--text-dark);outline:none;transition:border-color .18s;width:100%}
+.gate-input:focus{border-color:var(--teal)}
+.gate-check{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text-mid);line-height:1.5}
+.gate-check input{width:16px;height:16px;accent-color:var(--teal);flex-shrink:0;margin-top:2px}
+.gate-check a{color:var(--teal);text-decoration:none}
+.gate-submit{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:14px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .18s;margin-top:4px}
+.gate-submit:hover{background:var(--teal-dark)}
 
-    /* ── HOW IT WORKS ── */
-    .steps-section {
-      background: var(--white);
-      padding: 72px 40px;
-      text-align: center;
-    }
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: 34px;
-      font-weight: 800;
-      color: var(--text-dark);
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-    }
-    .section-sub {
-      font-size: 16px;
-      font-weight: 400;
-      color: var(--text-light);
-      margin-bottom: 56px;
-    }
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .step-card {
-      padding: 36px 28px;
-      border-radius: 16px;
-      background: var(--cream);
-      text-align: center;
-    }
-    .step-num {
-      width: 48px;
-      height: 48px;
-      background: var(--teal);
-      color: var(--white);
-      font-size: 20px;
-      font-weight: 800;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-    }
-    .step-card h3 {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin-bottom: 10px;
-    }
-    .step-card p {
-      font-size: 14px;
-      color: var(--text-mid);
-      font-weight: 400;
-    }
+/* CALCULATOR */
+.calc-section{padding:64px 24px;background:var(--cream)}
+.calc-layout{display:grid;grid-template-columns:1fr 340px;gap:24px;max-width:1280px;margin:0 auto;align-items:start}
+@media(max-width:900px){.calc-layout{grid-template-columns:1fr}}
 
-    /* ── CALCULATOR ── */
-    .calc-section {
-      padding: 72px 40px;
-      background: var(--cream);
-    }
-    .calc-section > .section-label,
-    .calc-section > .section-title,
-    .calc-section > .section-sub { text-align: center; }
+/* TABS */
+.category-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tab-btn{background:#fff;border:1.5px solid var(--cream-dark);color:var(--text-mid);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;padding:7px 13px;border-radius:6px;cursor:pointer;transition:all .18s;white-space:nowrap}
+.tab-btn:hover{border-color:var(--teal);color:var(--teal)}
+.tab-btn.active{background:var(--teal);border-color:var(--teal);color:#fff}
 
-    .calc-layout {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 28px;
-      max-width: 1300px;
-      margin: 0 auto;
-      align-items: start;
-    }
+/* SEARCH */
+.search-bar{position:relative;margin-bottom:16px}
+.search-bar input{width:100%;padding:11px 40px 11px 14px;border:1.5px solid var(--cream-dark);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:14px;background:#fff;color:var(--text-dark);outline:none;transition:border-color .2s}
+.search-bar input:focus{border-color:var(--teal)}
+.search-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text-light);pointer-events:none}
 
-    /* CATEGORY TABS */
-    .category-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-    .tab-btn {
-      background: var(--white);
-      border: 1.5px solid var(--cream-dark);
-      color: var(--text-mid);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.18s;
-      letter-spacing: 0.2px;
-    }
-    .tab-btn:hover {
-      border-color: var(--teal);
-      color: var(--teal);
-    }
-    .tab-btn.active {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: var(--white);
-    }
+/* PRODUCT CARDS */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;max-height:640px;overflow-y:auto;padding-right:4px}
+.products-grid::-webkit-scrollbar{width:4px}
+.products-grid::-webkit-scrollbar-thumb{background:var(--teal-light);border-radius:2px}
+.product-card{background:#fff;border:1.5px solid transparent;border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .18s;position:relative;display:flex;flex-direction:column}
+.product-card:hover{border-color:var(--teal);box-shadow:var(--shadow);transform:translateY(-1px)}
+.product-card.in-cart{border-color:var(--teal);background:#f0fafa}
+.product-img-wrap{width:100%;height:130px;background:var(--cream);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.product-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.product-img-wrap .p-icon{font-size:40px;position:absolute}
+.product-img-wrap img.loaded + .p-icon{display:none}
+.in-cart-badge{position:absolute;top:8px;right:8px;width:24px;height:24px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border-radius:50%;display:none;align-items:center;justify-content:center}
+.product-card.in-cart .in-cart-badge{display:flex}
+.product-body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.product-name{font-size:12px;font-weight:600;color:var(--text-dark);line-height:1.4}
+.product-sku{font-size:10px;color:var(--text-light)}
+.product-price{font-size:14px;font-weight:700;color:var(--teal)}
+.product-actions{display:flex;gap:6px;margin-top:4px}
+.product-add-btn{flex:1;background:var(--teal);color:#fff;border:none;border-radius:6px;padding:8px 6px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:background .18s}
+.product-add-btn:hover{background:var(--teal-dark)}
+.product-info-btn{width:32px;background:var(--cream);border:none;border-radius:6px;cursor:pointer;font-size:14px;transition:background .18s;flex-shrink:0}
+.product-info-btn:hover{background:var(--cream-dark)}
+.product-card.hidden{display:none}
 
-    /* SEARCH */
-    .search-bar {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    .search-bar input {
-      width: 100%;
-      padding: 12px 44px 12px 16px;
-      border: 1.5px solid var(--cream-dark);
-      border-radius: 8px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      font-weight: 400;
-      background: var(--white);
-      color: var(--text-dark);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .search-bar input:focus { border-color: var(--teal); }
-    .search-bar input::placeholder { color: var(--text-light); }
-    .search-icon {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-light);
-      font-size: 16px;
-      pointer-events: none;
-    }
+/* QUOTE PANEL */
+.quote-panel{background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;position:sticky;top:80px}
+.quote-header{background:var(--teal);padding:20px 22px;color:#fff}
+.quote-header h3{font-size:17px;font-weight:700;margin-bottom:3px}
+.quote-header p{font-size:11px;color:rgba(255,255,255,.7)}
+.items-count{background:rgba(255,255,255,.2);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:7px}
+.quote-items{padding:14px 20px;max-height:360px;overflow-y:auto}
+.quote-items::-webkit-scrollbar{width:3px}
+.quote-items::-webkit-scrollbar-thumb{background:var(--cream-dark);border-radius:2px}
+.quote-empty{text-align:center;padding:36px 0;color:var(--text-light);font-size:13px}
+.quote-empty-icon{font-size:38px;margin-bottom:10px}
+.quote-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--cream)}
+.quote-item:last-child{border-bottom:none}
+.quote-item-info{flex:1;min-width:0}
+.quote-item-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.quote-item-price{font-size:11px;color:var(--text-light)}
+.qty-control{display:flex;align-items:center;gap:5px}
+.qty-btn{width:24px;height:24px;border:1.5px solid var(--cream-dark);background:#fff;border-radius:5px;cursor:pointer;font-size:14px;font-weight:700;color:var(--teal);display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1}
+.qty-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.qty-num{font-size:13px;font-weight:700;min-width:18px;text-align:center}
+.quote-item-total{font-size:12px;font-weight:700;color:var(--teal);min-width:68px;text-align:right}
+.remove-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:15px;transition:color .15s;line-height:1;padding:0}
+.remove-btn:hover{color:#e06060}
+.quote-footer{padding:18px 22px;border-top:2px solid var(--cream);background:#fafaf8}
+.quote-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:13px}
+.quote-row .lbl{color:var(--text-mid);font-weight:500}
+.quote-row .val{font-weight:600}
+.quote-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1.5px solid var(--cream-dark)}
+.quote-total .lbl{font-size:16px;font-weight:700}
+.quote-total .val{font-size:21px;font-weight:800;color:var(--teal)}
+.quote-cta{display:block;width:100%;background:var(--teal);color:#fff;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;padding:13px;border:none;border-radius:8px;cursor:pointer;margin-top:14px;letter-spacing:.3px;transition:background .2s}
+.quote-cta:hover{background:var(--teal-dark)}
+.quote-cta:disabled{background:var(--text-light);cursor:not-allowed}
+.quote-clear{display:block;width:100%;background:none;color:var(--text-light);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;padding:7px;border:none;cursor:pointer;margin-top:6px;transition:color .18s}
+.quote-clear:hover{color:#e06060}
 
-    /* PRODUCTS GRID */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-      max-height: 620px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .products-grid::-webkit-scrollbar { width: 5px; }
-    .products-grid::-webkit-scrollbar-track { background: transparent; }
-    .products-grid::-webkit-scrollbar-thumb { background: var(--teal-light); border-radius: 3px; }
+/* ADVANTAGES MODAL */
+.adv-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;align-items:center;justify-content:center;padding:16px}
+.adv-overlay.open{display:flex}
+.adv-box{background:#fff;border-radius:16px;padding:32px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:80vh;overflow-y:auto}
+.adv-box h3{font-size:18px;font-weight:800;color:var(--text-dark);margin-bottom:6px}
+.adv-price{font-size:16px;font-weight:700;color:var(--teal);margin-bottom:20px}
+.adv-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.adv-list li{display:flex;gap:10px;font-size:13px;color:var(--text-mid);line-height:1.5}
+.adv-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px}
+.adv-close{width:100%;background:var(--teal);color:#fff;border:none;border-radius:8px;padding:12px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .18s}
+.adv-close:hover{background:var(--teal-dark)}
 
-    .product-card {
-      background: var(--white);
-      border: 1.5px solid transparent;
-      border-radius: 12px;
-      padding: 18px 16px;
-      cursor: pointer;
-      transition: all 0.18s;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .product-card:hover {
-      border-color: var(--teal);
-      box-shadow: var(--shadow);
-      transform: translateY(-1px);
-    }
-    .product-card.in-cart {
-      border-color: var(--teal);
-      background: #f0fafa;
-    }
-    .product-card.in-cart::after {
-      content: '✓';
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      width: 22px;
-      height: 22px;
-      background: var(--teal);
-      color: var(--white);
-      font-size: 13px;
-      font-weight: 700;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 22px;
-      text-align: center;
-    }
-    .product-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--cream);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-    .product-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-dark);
-      line-height: 1.4;
-      flex: 1;
-    }
-    .product-sku {
-      font-size: 11px;
-      color: var(--text-light);
-      font-weight: 400;
-    }
-    .product-price {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--teal);
-    }
-    .product-add-btn {
-      background: var(--teal);
-      color: var(--white);
-      border: none;
-      border-radius: 6px;
-      padding: 8px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.18s;
-      letter-spacing: 0.3px;
-    }
-    .product-add-btn:hover { background: var(--teal-dark); }
-    .product-card.hidden { display: none; }
+/* CONTACT */
+.contact-section{background:var(--teal);padding:72px 24px;text-align:center;color:#fff}
+.contact-section .section-label{color:var(--cream)}
+.contact-section .section-title{color:#fff;margin-bottom:14px}
+.contact-section>p{color:rgba(255,255,255,.75);font-size:15px;margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto}
+.contact-grid{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.contact-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:24px 28px;text-align:center;min-width:160px}
+.contact-card-icon{font-size:26px;margin-bottom:10px}
+.contact-card-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:5px}
+.contact-card-val{font-size:14px;font-weight:600;color:#fff}
 
-    /* QUOTE PANEL */
-    .quote-panel {
-      background: var(--white);
-      border-radius: 16px;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      position: sticky;
-      top: 80px;
-    }
-    .quote-header {
-      background: var(--teal);
-      padding: 22px 24px;
-      color: var(--white);
-    }
-    .quote-header h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .quote-header p {
-      font-size: 12px;
-      color: rgba(255,255,255,0.7);
-      font-weight: 400;
-    }
-    .quote-items {
-      padding: 16px 24px;
-      max-height: 380px;
-      overflow-y: auto;
-    }
-    .quote-items::-webkit-scrollbar { width: 4px; }
-    .quote-items::-webkit-scrollbar-thumb { background: var(--cream-dark); border-radius: 2px; }
-    .quote-empty {
-      text-align: center;
-      padding: 40px 0;
-      color: var(--text-light);
-      font-size: 13px;
-      font-weight: 400;
-    }
-    .quote-empty-icon { font-size: 40px; margin-bottom: 12px; }
-    .quote-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--cream);
-    }
-    .quote-item:last-child { border-bottom: none; }
-    .quote-item-info { flex: 1; min-width: 0; }
-    .quote-item-name {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-dark);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .quote-item-price {
-      font-size: 12px;
-      color: var(--text-light);
-      font-weight: 400;
-    }
-    .qty-control {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .qty-btn {
-      width: 26px;
-      height: 26px;
-      border: 1.5px solid var(--cream-dark);
-      background: var(--white);
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--teal);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      line-height: 1;
-    }
-    .qty-btn:hover { background: var(--teal); color: var(--white); border-color: var(--teal); }
-    .qty-num {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-dark);
-      min-width: 20px;
-      text-align: center;
-    }
-    .quote-item-total {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--teal);
-      min-width: 72px;
-      text-align: right;
-    }
-    .remove-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #ccc;
-      font-size: 16px;
-      padding: 0;
-      transition: color 0.15s;
-      line-height: 1;
-    }
-    .remove-btn:hover { color: #e06060; }
+/* ADMIN PANEL */
+.admin-panel{display:none;position:fixed;bottom:20px;right:20px;z-index:500;background:var(--teal-dark);color:#fff;border-radius:12px;padding:20px;max-width:320px;box-shadow:var(--shadow-lg)}
+.admin-panel h4{font-size:14px;font-weight:700;margin-bottom:12px}
+.admin-panel p{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px}
+.admin-dl-btn{background:#fff;color:var(--teal);border:none;border-radius:6px;padding:10px 16px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;cursor:pointer;width:100%}
+.admin-close-btn{background:none;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;position:absolute;top:12px;right:14px}
 
-    .quote-footer {
-      padding: 20px 24px;
-      border-top: 2px solid var(--cream);
-      background: #fafaf8;
-    }
-    .quote-subtotal {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .quote-subtotal-label {
-      font-size: 13px;
-      color: var(--text-mid);
-      font-weight: 500;
-    }
-    .quote-subtotal-val {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-dark);
-    }
-    .quote-total {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1.5px solid var(--cream-dark);
-    }
-    .quote-total-label {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-dark);
-    }
-    .quote-total-val {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--teal);
-    }
-    .quote-cta {
-      display: block;
-      width: 100%;
-      background: var(--teal);
-      color: var(--white);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 16px;
-      letter-spacing: 0.3px;
-      transition: background 0.2s;
-    }
-    .quote-cta:hover { background: var(--teal-dark); }
-    .quote-cta:disabled {
-      background: var(--text-light);
-      cursor: not-allowed;
-    }
-    .quote-clear {
-      display: block;
-      width: 100%;
-      background: none;
-      color: var(--text-light);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 8px;
-      border: none;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: color 0.18s;
-    }
-    .quote-clear:hover { color: #e06060; }
-    .items-count {
-      background: var(--cream);
-      color: var(--teal);
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 10px;
-      margin-left: 8px;
-    }
+/* FOOTER */
+footer{background:var(--teal-dark);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+footer .logo{font-size:18px}
+footer p{font-size:11px;color:rgba(255,255,255,.45)}
 
-    /* ── CONTACT ── */
-    .contact-section {
-      background: var(--teal);
-      padding: 80px 40px;
-      text-align: center;
-      color: var(--white);
-    }
-    .contact-section .section-label { color: var(--cream); }
-    .contact-section .section-title { color: var(--white); margin-bottom: 16px; }
-    .contact-section p {
-      color: rgba(255,255,255,0.75);
-      font-size: 16px;
-      margin-bottom: 40px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .contact-grid {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-    .contact-card {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 12px;
-      padding: 28px 32px;
-      text-align: center;
-      min-width: 180px;
-    }
-    .contact-card-icon { font-size: 28px; margin-bottom: 12px; }
-    .contact-card-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 6px;
-    }
-    .contact-card-val {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--white);
-    }
+/* QUOTE REQUEST MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:350;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:clamp(24px,5vw,40px);max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto}
+.modal h3{font-size:21px;font-weight:800;color:var(--text-dark);margin-bottom:6px}
+.modal>p{font-size:13px;color:var(--text-mid);margin-bottom:22px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.full{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:11px;font-weight:600;color:var(--text-mid);letter-spacing:.3px}
+.form-group input,.form-group textarea{padding:10px 13px;border:1.5px solid var(--cream-dark);border-radius:7px;font-family:'Montserrat',sans-serif;font-size:13px;color:var(--text-dark);outline:none;transition:border-color .18s;resize:none}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--teal)}
+.modal-summary{background:var(--cream);border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:12px;font-weight:500;color:var(--text-mid)}
+.modal-summary strong{color:var(--teal);font-weight:700}
+.modal-actions{display:flex;gap:10px;margin-top:4px}
+.btn-primary{flex:1;background:var(--teal);color:#fff;border:none;border-radius:8px;padding:12px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .18s}
+.btn-primary:hover{background:var(--teal-dark)}
+.btn-secondary{background:none;color:var(--text-mid);border:1.5px solid var(--cream-dark);border-radius:8px;padding:12px 16px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal)}
 
-    /* ── FOOTER ── */
-    footer {
-      background: var(--teal-dark);
-      padding: 24px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    footer .logo { font-size: 20px; }
-    footer p {
-      font-size: 12px;
-      color: rgba(255,255,255,0.45);
-      font-weight: 400;
-    }
-
-    /* ── MODAL ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 40px;
-      max-width: 480px;
-      width: 90%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    }
-    .modal h3 {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text-dark);
-      margin-bottom: 8px;
-    }
-    .modal p {
-      font-size: 14px;
-      color: var(--text-mid);
-      margin-bottom: 28px;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    .form-row.full { grid-template-columns: 1fr; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-mid);
-      letter-spacing: 0.3px;
-    }
-    .form-group input,
-    .form-group textarea {
-      padding: 11px 14px;
-      border: 1.5px solid var(--cream-dark);
-      border-radius: 7px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      color: var(--text-dark);
-      outline: none;
-      transition: border-color 0.18s;
-      resize: none;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus { border-color: var(--teal); }
-    .modal-summary {
-      background: var(--cream);
-      border-radius: 8px;
-      padding: 14px 16px;
-      margin-bottom: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-mid);
-    }
-    .modal-summary strong { color: var(--teal); font-weight: 700; }
-    .modal-actions { display: flex; gap: 12px; margin-top: 4px; }
-    .btn-primary {
-      flex: 1;
-      background: var(--teal);
-      color: var(--white);
-      border: none;
-      border-radius: 8px;
-      padding: 13px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.18s;
-    }
-    .btn-primary:hover { background: var(--teal-dark); }
-    .btn-secondary {
-      background: none;
-      color: var(--text-mid);
-      border: 1.5px solid var(--cream-dark);
-      border-radius: 8px;
-      padding: 13px 20px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.18s;
-    }
-    .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
-
-    @media (max-width: 900px) {
-      .calc-layout { grid-template-columns: 1fr; }
-      .quote-panel { position: static; }
-      .steps-grid { grid-template-columns: 1fr; }
-      .hero-stats { gap: 30px; }
-      nav { display: none; }
-    }
-  </style>
+/* MOBILE */
+@media(max-width:600px){
+  header{padding:0 16px}
+  nav a:not(.nav-cta):not(.lang-only){display:none}
+  .hero{padding:60px 16px 48px}
+  .steps-section,.calc-section,.contact-section{padding:48px 16px}
+  .form-row{grid-template-columns:1fr}
+  .products-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));max-height:none}
+}
+</style>
 </head>
 <body>
 
@@ -765,113 +221,92 @@
 <header>
   <div class="logo">ZI<span>G</span>O</div>
   <nav>
-    <a href="#calculator">Calculator</a>
-    <a href="#contact">Contact</a>
-    <a href="#calculator" class="nav-cta">Get Quote</a>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+      <button class="lang-btn" onclick="setLang('hy',this)">ՀՅ</button>
+    </div>
+    <a href="#calculator" class="nav-cta lang-only" data-en="Get Quote" data-hy="Գնանշում">Get Quote</a>
   </nav>
 </header>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">Smart Home Solutions</div>
-  <h1>Build Your <em>Smart Home</em><br />Get an Instant Quote</h1>
-  <p>Select the devices you need and get a precise price estimate for your smart home project in seconds.</p>
-  <a href="#calculator" class="hero-btn">Start Building →</a>
+  <div class="hero-badge" data-en="Smart Home Solutions" data-hy="Խելացի Տան Լուծումներ">Smart Home Solutions</div>
+  <h1 data-en="Build Your <em>Smart Home</em><br/>Get an Instant Quote" data-hy="Կառուցիր Քո <em>Խելացի Տունը</em><br/>Ստացիր Անմիջական Գնանշում">Build Your <em>Smart Home</em><br/>Get an Instant Quote</h1>
+  <p data-en="Select the devices you need and get a precise price estimate for your smart home project in seconds." data-hy="Ընտրեք ձեզ անհրաժեշտ սարքերը և ստացեք ձեր խելացի տան ծրագրի ճշգրիտ գնահաշվարկը վայրկյանների ընթացքում։">Select the devices you need and get a precise price estimate for your smart home project in seconds.</p>
+  <button class="hero-btn" onclick="openGate()" data-en="Start Building →" data-hy="Սկսել Կառուցելը →">Start Building →</button>
   <div class="hero-stats">
-    <div class="stat-item">
-      <span class="stat-num">100+</span>
-      <span class="stat-label">Smart Devices</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">9</span>
-      <span class="stat-label">Categories</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">5★</span>
-      <span class="stat-label">Customer Rating</span>
-    </div>
+    <div class="stat-item"><span class="stat-num">100+</span><span class="stat-label" data-en="Smart Devices" data-hy="Խելացի Սարքեր">Smart Devices</span></div>
+    <div class="stat-item"><span class="stat-num">9</span><span class="stat-label" data-en="Categories" data-hy="Կատեգորիաներ">Categories</span></div>
+    <div class="stat-item"><span class="stat-num">5★</span><span class="stat-label" data-en="Customer Rating" data-hy="Հաճախորդների Գնահատական">Customer Rating</span></div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section class="steps-section" id="how">
-  <div class="section-label">How It Works</div>
-  <div class="section-title">Three Simple Steps</div>
-  <p class="section-sub">From selection to installation — we make it seamless</p>
+  <div class="section-label" data-en="How It Works" data-hy="Ինչպես Է Աշխատում">How It Works</div>
+  <div class="section-title" data-en="Three Simple Steps" data-hy="Երեք Պարզ Քայլ">Three Simple Steps</div>
+  <p class="section-sub" data-en="From selection to installation — we make it seamless" data-hy="Ընտրությունից մինչ տեղադրում — մենք ամեն ինչ հեշտ ենք դարձնում">From selection to installation — we make it seamless</p>
   <div class="steps-grid">
-    <div class="step-card">
-      <div class="step-num">1</div>
-      <h3>Choose Devices</h3>
-      <p>Browse our full catalogue and add the smart devices you need for each room.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">2</div>
-      <h3>Get Your Quote</h3>
-      <p>See live pricing as you build. Adjust quantities until your budget is perfect.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">3</div>
-      <h3>We Install It</h3>
-      <p>Our certified team handles delivery and professional installation end-to-end.</p>
-    </div>
+    <div class="step-card"><div class="step-num">1</div><h3 data-en="Choose Devices" data-hy="Ընտրեք Սարքեր">Choose Devices</h3><p data-en="Browse our full catalogue and add devices for each room." data-hy="Դիտեք մեր ամբողջ կատալոգը և ավելացրեք սարքեր յուրաքանչյուր սենյակի համար։">Browse our full catalogue and add devices for each room.</p></div>
+    <div class="step-card"><div class="step-num">2</div><h3 data-en="Get Your Quote" data-hy="Ստացեք Գնանշումը">Get Your Quote</h3><p data-en="See live pricing as you build. Adjust quantities freely." data-hy="Տեսեք կենդանի գները կառուցելու ընթացքում։">See live pricing as you build. Adjust quantities freely.</p></div>
+    <div class="step-card"><div class="step-num">3</div><h3 data-en="We Install It" data-hy="Մենք Տեղադրում Ենք">We Install It</h3><p data-en="Our certified team handles delivery and professional installation." data-hy="Մեր թիմը կատարում է առաքումն ու մասնագիտական տեղադրումը։">Our certified team handles delivery and professional installation.</p></div>
   </div>
 </section>
 
-<!-- CALCULATOR -->
+<!-- CALCULATOR (locked until email gate) -->
 <section class="calc-section" id="calculator">
-  <div class="section-label">Smart Home Calculator</div>
-  <div class="section-title">Build Your System</div>
-  <p class="section-sub" style="margin-bottom:36px;">Click any product to add it to your quote</p>
+  <div class="section-label" data-en="Smart Home Calculator" data-hy="Խելացի Տան Հաշվիչ">Smart Home Calculator</div>
+  <div class="section-title" data-en="Build Your System" data-hy="Կառուցեք Ձեր Համակարգը">Build Your System</div>
+  <p class="section-sub" data-en="Click any product to add it to your quote" data-hy="Սեղմեք ցանկացած ապրանքի վրա՝ այն ձեր գնանշմանը ավելացնելու համար">Click any product to add it to your quote</p>
 
-  <div class="calc-layout">
-    <!-- LEFT: Products -->
-    <div>
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()" />
-        <span class="search-icon">🔍</span>
-      </div>
-      <div class="category-tabs" id="categoryTabs">
-        <button class="tab-btn active" onclick="filterCategory('all', this)">All</button>
-        <button class="tab-btn" onclick="filterCategory('switches', this)">Switches</button>
-        <button class="tab-btn" onclick="filterCategory('sockets', this)">Sockets</button>
-        <button class="tab-btn" onclick="filterCategory('sensors', this)">Sensors</button>
-        <button class="tab-btn" onclick="filterCategory('thermostats', this)">Thermostats</button>
-        <button class="tab-btn" onclick="filterCategory('lighting', this)">Lighting</button>
-        <button class="tab-btn" onclick="filterCategory('curtains', this)">Curtains</button>
-        <button class="tab-btn" onclick="filterCategory('security', this)">Security</button>
-        <button class="tab-btn" onclick="filterCategory('hubs', this)">Hubs & Control</button>
-        <button class="tab-btn" onclick="filterCategory('electrical', this)">Electrical</button>
-      </div>
-      <div class="products-grid" id="productsGrid"></div>
-    </div>
+  <!-- LOCKED OVERLAY -->
+  <div id="calcLock" style="text-align:center;padding:60px 20px;background:#fff;border-radius:16px;max-width:500px;margin:0 auto;box-shadow:var(--shadow)">
+    <div style="font-size:52px;margin-bottom:16px">🔒</div>
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:10px" data-en="Access the Calculator" data-hy="Մուտք Գործեք Հաշվիչ">Access the Calculator</h3>
+    <p style="font-size:14px;color:var(--text-mid);margin-bottom:24px" data-en="Enter your name and email to unlock the full product catalogue and pricing." data-hy="Մուտքագրեք ձեր անունն ու էլ-փոստը՝ ամբողջ կատալոգն ու գները բացելու համար։">Enter your name and email to unlock the full product catalogue and pricing.</p>
+    <button class="hero-btn" onclick="openGate()" style="font-size:14px;padding:13px 32px" data-en="Unlock Free →" data-hy="Բացել Անվճար →">Unlock Free →</button>
+  </div>
 
-    <!-- RIGHT: Quote Panel -->
-    <div class="quote-panel">
-      <div class="quote-header">
-        <h3>Your Quote <span class="items-count" id="itemsCount">0 items</span></h3>
-        <p>Live pricing — no commitment needed</p>
+  <div id="calcContent" style="display:none">
+    <div class="calc-layout">
+      <div>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search products…" oninput="filterProducts()"/>
+          <span class="search-icon">🔍</span>
+        </div>
+        <div class="category-tabs" id="categoryTabs">
+          <button class="tab-btn active" onclick="filterCategory('all',this)" data-en="All" data-hy="Բոլորը">All</button>
+          <button class="tab-btn" onclick="filterCategory('switches',this)" data-en="Switches" data-hy="Անջատիչներ">Switches</button>
+          <button class="tab-btn" onclick="filterCategory('sockets',this)" data-en="Sockets" data-hy="Վարդակներ">Sockets</button>
+          <button class="tab-btn" onclick="filterCategory('sensors',this)" data-en="Sensors" data-hy="Տվիչներ">Sensors</button>
+          <button class="tab-btn" onclick="filterCategory('thermostats',this)" data-en="Thermostats" data-hy="Թերմոստատներ">Thermostats</button>
+          <button class="tab-btn" onclick="filterCategory('lighting',this)" data-en="Lighting" data-hy="Լուսավորություն">Lighting</button>
+          <button class="tab-btn" onclick="filterCategory('curtains',this)" data-en="Curtains" data-hy="Վարագույրներ">Curtains</button>
+          <button class="tab-btn" onclick="filterCategory('security',this)" data-en="Security" data-hy="Անվտանգություն">Security</button>
+          <button class="tab-btn" onclick="filterCategory('hubs',this)" data-en="Hubs &amp; Control" data-hy="Հաբ և Կառավարում">Hubs &amp; Control</button>
+          <button class="tab-btn" onclick="filterCategory('electrical',this)" data-en="Electrical" data-hy="Էլեկտրական">Electrical</button>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
       </div>
-      <div class="quote-items" id="quoteItems">
-        <div class="quote-empty" id="quoteEmpty">
-          <div class="quote-empty-icon">🏠</div>
-          <p>Add products to start<br/>building your quote</p>
+      <div class="quote-panel">
+        <div class="quote-header">
+          <h3 data-en="Your Quote" data-hy="Ձեր Գնանշումը">Your Quote <span class="items-count" id="itemsCount">0</span></h3>
+          <p data-en="Live pricing — no commitment needed" data-hy="Կենդանի գներ — պարտավորություն չի պահանջվում">Live pricing — no commitment needed</p>
         </div>
-      </div>
-      <div class="quote-footer">
-        <div class="quote-subtotal">
-          <span class="quote-subtotal-label">Subtotal</span>
-          <span class="quote-subtotal-val" id="subtotalVal">֏ 0</span>
+        <div class="quote-items" id="quoteItems">
+          <div class="quote-empty" id="quoteEmpty">
+            <div class="quote-empty-icon">🏠</div>
+            <p data-en="Add products to start your quote" data-hy="Ավելացրեք ապրանքներ գնանշում սկսելու համար">Add products to start your quote</p>
+          </div>
         </div>
-        <div class="quote-subtotal">
-          <span class="quote-subtotal-label">Installation (est.)</span>
-          <span class="quote-subtotal-val" id="installVal">֏ 0</span>
+        <div class="quote-footer">
+          <div class="quote-row"><span class="lbl" data-en="Subtotal" data-hy="Ենթաընդամենը">Subtotal</span><span class="val" id="subtotalVal">֏ 0</span></div>
+          <div class="quote-row"><span class="lbl" data-en="Installation (est. 15%)" data-hy="Տեղադրում (մոտ. 15%)">Installation (est. 15%)</span><span class="val" id="installVal">֏ 0</span></div>
+          <div class="quote-total"><span class="lbl" data-en="Total" data-hy="Ընդամենը">Total</span><span class="val" id="totalVal">֏ 0</span></div>
+          <button class="quote-cta" id="quoteCta" onclick="openModal()" disabled data-en="Request This Quote" data-hy="Հայտ Ներկայացնել">Request This Quote</button>
+          <button class="quote-clear" onclick="clearQuote()" data-en="Clear all items" data-hy="Մաքրել բոլոր ապրանքները">Clear all items</button>
         </div>
-        <div class="quote-total">
-          <span class="quote-total-label">Total</span>
-          <span class="quote-total-val" id="totalVal">֏ 0</span>
-        </div>
-        <button class="quote-cta" id="quoteCta" onclick="openModal()" disabled>Request This Quote</button>
-        <button class="quote-clear" onclick="clearQuote()">Clear all items</button>
       </div>
     </div>
   </div>
@@ -879,191 +314,277 @@
 
 <!-- CONTACT -->
 <section class="contact-section" id="contact">
-  <div class="section-label">Get In Touch</div>
-  <div class="section-title">Ready to Go Smart?</div>
-  <p>Our team is ready to design and install your perfect smart home system.</p>
+  <div class="section-label" data-en="Get In Touch" data-hy="Կապ Հաստատել">Get In Touch</div>
+  <div class="section-title" data-en="Ready to Go Smart?" data-hy="Պատրա՞ստ Եք Խելացի Դառնալ">Ready to Go Smart?</div>
+  <p data-en="Our team is ready to design and install your perfect smart home system." data-hy="Մեր թիմը պատրաստ է նախագծել և տեղադրել ձեր կատարյալ խելացի տան համակարգը։">Our team is ready to design and install your perfect smart home system.</p>
   <div class="contact-grid">
-    <div class="contact-card">
-      <div class="contact-card-icon">📞</div>
-      <div class="contact-card-label">Call Us</div>
-      <div class="contact-card-val">+374 XX XXX XXX</div>
-    </div>
-    <div class="contact-card">
-      <div class="contact-card-icon">✉️</div>
-      <div class="contact-card-label">Email</div>
-      <div class="contact-card-val">info@zigo.am</div>
-    </div>
-    <div class="contact-card">
-      <div class="contact-card-icon">📍</div>
-      <div class="contact-card-label">Location</div>
-      <div class="contact-card-val">Yerevan, Armenia</div>
-    </div>
+    <div class="contact-card"><div class="contact-card-icon">📞</div><div class="contact-card-label" data-en="Call Us" data-hy="Զանգահարեք">Call Us</div><div class="contact-card-val">+374 XX XXX XXX</div></div>
+    <div class="contact-card"><div class="contact-card-icon">✉️</div><div class="contact-card-label" data-en="Email" data-hy="Էլ-փոստ">Email</div><div class="contact-card-val">info@zigo.am</div></div>
+    <div class="contact-card"><div class="contact-card-icon">📍</div><div class="contact-card-label" data-en="Location" data-hy="Գտնվելու Վայր">Location</div><div class="contact-card-val">Paruyr Sevak 51/9</div></div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="logo" style="font-size:20px;">ZI<span>G</span>O</div>
+  <div class="logo">ZI<span>G</span>O</div>
   <p>© 2024 Zigo Smart Home. All rights reserved.</p>
 </footer>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3>Request a Quote</h3>
-    <p>Fill in your details and we'll get back to you within 24 hours with a detailed proposal.</p>
-    <div class="modal-summary" id="modalSummary"></div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>First Name</label>
-        <input type="text" placeholder="Aram" />
-      </div>
-      <div class="form-group">
-        <label>Last Name</label>
-        <input type="text" placeholder="Hakobyan" />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="tel" placeholder="+374 XX XXX XXX" />
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" placeholder="your@email.com" />
-      </div>
-    </div>
-    <div class="form-row full">
-      <div class="form-group">
-        <label>Additional Notes (optional)</label>
-        <textarea rows="3" placeholder="Apartment size, specific requirements..."></textarea>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="submitQuote()">Send Quote Request →</button>
+<!-- EMAIL GATE MODAL -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-box">
+    <div class="gate-icon">🏠</div>
+    <h2 data-en="Unlock the Calculator" data-hy="Բացել Հաշվիչը">Unlock the Calculator</h2>
+    <p data-en="Enter your details to access full pricing and build your smart home quote." data-hy="Մուտքագրեք ձեր տվյալները՝ գները բացելու և գնանշում ստեղծելու համար։">Enter your details to access full pricing and build your smart home quote.</p>
+    <div class="gate-form">
+      <input class="gate-input" id="gateName" type="text" placeholder="Your name" data-en-placeholder="Your name" data-hy-placeholder="Ձեր անունը"/>
+      <input class="gate-input" id="gateEmail" type="email" placeholder="Your email" data-en-placeholder="Your email" data-hy-placeholder="Ձեր էլ-փոստը"/>
+      <label class="gate-check">
+        <input type="checkbox" id="gateTerms"/>
+        <span data-en="I agree to the <a href='#'>Terms of Service</a> and <a href='#'>Privacy Policy</a>" data-hy="Համաձայն եմ <a href='#'>Ծառայության Պայմաններին</a> և <a href='#'>Գաղտնիության Քաղաքականությանը</a>">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+      </label>
+      <button class="gate-submit" onclick="submitGate()" data-en="Access Calculator →" data-hy="Բացել Հաշվիչը →">Access Calculator →</button>
     </div>
   </div>
 </div>
 
+<!-- ADVANTAGES MODAL -->
+<div class="adv-overlay" id="advOverlay">
+  <div class="adv-box">
+    <h3 id="advName"></h3>
+    <div class="adv-price" id="advPrice"></div>
+    <ul class="adv-list" id="advList"></ul>
+    <button class="adv-close" onclick="closeAdv()" data-en="Close" data-hy="Փակել">Close</button>
+  </div>
+</div>
+
+<!-- QUOTE REQUEST MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 data-en="Request a Quote" data-hy="Հայտ Ներկայացնել">Request a Quote</h3>
+    <p data-en="We'll get back to you within 24 hours with a detailed proposal." data-hy="Մենք կդիմենք ձեզ 24 ժամվա ընթացքում մանրամասն առաջարկով։">We'll get back to you within 24 hours with a detailed proposal.</p>
+    <div class="modal-summary" id="modalSummary"></div>
+    <div class="form-row">
+      <div class="form-group"><label data-en="First Name" data-hy="Անուն">First Name</label><input type="text" id="reqFirst" placeholder="Aram"/></div>
+      <div class="form-group"><label data-en="Last Name" data-hy="Ազգանուն">Last Name</label><input type="text" id="reqLast" placeholder="Hakobyan"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label data-en="Phone" data-hy="Հեռախոս">Phone</label><input type="tel" id="reqPhone" placeholder="+374…"/></div>
+      <div class="form-group"><label data-en="Email" data-hy="Էլ-փոստ">Email</label><input type="email" id="reqEmail" placeholder="you@email.com"/></div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group"><label data-en="Notes (optional)" data-hy="Նշումներ (կամընտիր)">Notes (optional)</label><textarea rows="3" id="reqNotes" placeholder="Apartment size, specific requirements…"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()" data-en="Cancel" data-hy="Չեղարկել">Cancel</button>
+      <button class="btn-primary" onclick="submitQuote()" data-en="Send Request →" data-hy="Ուղարկել Հայտ →">Send Request →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL (Ctrl+Shift+A) -->
+<div class="admin-panel" id="adminPanel">
+  <button class="admin-close-btn" onclick="document.getElementById('adminPanel').style.display='none'">×</button>
+  <h4>📊 Admin — Email List</h4>
+  <p id="adminCount">0 emails collected</p>
+  <button class="admin-dl-btn" onclick="downloadEmails()">⬇ Download CSV</button>
+</div>
+
 <script>
+// ── LANGUAGE ──
+let lang = 'en';
+function setLang(l, btn) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('[data-'+l+']').forEach(el => {
+    const val = el.getAttribute('data-'+l);
+    if (el.tagName === 'INPUT') {
+      const ph = el.getAttribute('data-'+l+'-placeholder');
+      if (ph) el.placeholder = ph;
+    } else {
+      el.innerHTML = val;
+    }
+  });
+  // search placeholder
+  const si = document.getElementById('searchInput');
+  if (si) si.placeholder = l === 'hy' ? 'Փնտրել ապրանքներ…' : 'Search products…';
+}
+
+// ── PRODUCTS DATA ──
 const products = [
-  // SWITCHES
-  { id:1, name:"ZigBee Switch 1G", sku:"ZS-SR-EU1", price:12600, cat:"switches", icon:"💡" },
-  { id:2, name:"ZigBee Switch 2G", sku:"ZS-SR-EU2", price:14400, cat:"switches", icon:"💡" },
-  { id:3, name:"ZigBee Switch 3G", sku:"ZS-SR-EU3", price:15200, cat:"switches", icon:"💡" },
-  { id:4, name:"Smart Scene Switch", sku:"ZT-SR-EU2", price:9500, cat:"switches", icon:"🎬" },
-  { id:5, name:"WiFi Smart Switch 2G", sku:"WRS-EU2", price:9400, cat:"switches", icon:"💡" },
-  { id:6, name:"Bluetooth Smart Switch 2G", sku:"BS-EU2", price:9000, cat:"switches", icon:"💡" },
-  { id:7, name:"ZigBee Switch 2G White", sku:"ZS-B-EU2-WH", price:11500, cat:"switches", icon:"💡" },
-  { id:8, name:"ZigBee Switch 2G Gray", sku:"ZS-B-EU2-GY", price:12100, cat:"switches", icon:"💡" },
-  { id:9, name:"ZigBee Scene Switch (4-key)", sku:"ZT-SR-EU4", price:10800, cat:"switches", icon:"🎬" },
-  { id:10, name:"ZigBee 12-Scene Switch", sku:"ZT-SY-EU4", price:9300, cat:"switches", icon:"🎬" },
-  { id:11, name:"ZigBee Switch 3G Light + Scene", sku:"ZS-SR-EU3S", price:13800, cat:"switches", icon:"💡" },
-  { id:12, name:"ZigBee Smart Dimmer Switch 3G", sku:"ZS-ZR-EUD3", price:15700, cat:"switches", icon:"🌗" },
-  { id:13, name:"ZigBee Hidden Dimmer Module 2G", sku:"ZM-105B-M", price:9200, cat:"switches", icon:"🌗" },
-  { id:14, name:"ZigBee Hidden Dimmer Module 1G", sku:"ZM-105-M", price:6100, cat:"switches", icon:"🌗" },
-  { id:15, name:"WiFi Smart Hidden Module 1G", sku:"WM-104N", price:5200, cat:"switches", icon:"🔌" },
-  { id:16, name:"WiFi Smart Hidden Module 2G", sku:"WM-104BN", price:5700, cat:"switches", icon:"🔌" },
-  { id:17, name:"ZigBee Smart Hidden Module 2G", sku:"ZRM-104B", price:10000, cat:"switches", icon:"🔌" },
-  { id:18, name:"ZigBee Smart Hidden Module 1G 10A", sku:"ZM-104-M-LT", price:4200, cat:"switches", icon:"🔌" },
-  { id:19, name:"ZigBee Smart Hidden Module 1G 16A", sku:"ZM-104-M-16A", price:6900, cat:"switches", icon:"🔌" },
-  { id:20, name:"Switch Panel 2G", sku:"PP-SR-EU2P", price:1100, cat:"switches", icon:"🔲" },
-  { id:21, name:"Switch Panel 3G", sku:"PP-SR-EU3P", price:1500, cat:"switches", icon:"🔲" },
-  { id:22, name:"Switch Panel 4G", sku:"PP-SR-EU4P", price:2000, cat:"switches", icon:"🔲" },
+  {id:1,name:"ZigBee Switch 1G",nameHy:"ZigBee Անջատիչ 1Տ",sku:"ZS-SR-EU1",price:12600,cat:"switches",icon:"💡",img:"images/1.jpg",adv:["Remote on/off via app or voice","ZigBee mesh for reliable signal","Works with Google Home & Alexa","Energy usage monitoring","Elegant glass panel design"]},
+  {id:2,name:"ZigBee Switch 2G",nameHy:"ZigBee Անջատիչ 2Տ",sku:"ZS-SR-EU2",price:14400,cat:"switches",icon:"💡",img:"images/2.jpg",adv:["Control two circuits independently","ZigBee low-power mesh network","Scenes & schedules support","Child lock safety feature","Replaces standard wall switch"]},
+  {id:3,name:"ZigBee Switch 3G",nameHy:"ZigBee Անջատիչ 3Տ",sku:"ZS-SR-EU3",price:15200,cat:"switches",icon:"💡",img:"images/3.jpg",adv:["Triple circuit smart control","Gang switch for multi-light rooms","Automations & timer support","Slim EU format fits existing boxes","Voice & app control"]},
+  {id:4,name:"Smart Scene Switch",nameHy:"Սցենարային Անջատիչ",sku:"ZT-SR-EU2",price:9500,cat:"switches",icon:"🎬",img:"images/4.jpg",adv:["Trigger multiple scenes with one tap","Wireless — no wiring needed","Battery-powered, lasts 2+ years","Stick anywhere on wall or furniture","Supports up to 4 custom scenes"]},
+  {id:5,name:"WiFi Smart Switch 2G",nameHy:"WiFi Անջատիչ 2Տ",sku:"WRS-EU2",price:9400,cat:"switches",icon:"💡",img:"images/5.jpg",adv:["Direct WiFi — no hub required","Touch-sensitive glass panel","Works with Tuya Smart / Smart Life","Dimming support (compatible fixtures)","Overload protection built-in"]},
+  {id:6,name:"Bluetooth Smart Switch 2G",nameHy:"Bluetooth Անջատիչ 2Տ",sku:"BS-EU2",price:9000,cat:"switches",icon:"💡",img:"images/6.jpg",adv:["Bluetooth low-energy connection","No hub required for basic use","Ultra-fast local response <50ms","Sleek touchscreen interface","Easy app setup in under 2 minutes"]},
+  {id:7,name:"ZigBee Switch 2G White",nameHy:"ZigBee Անջատիչ 2Տ Սպիտակ",sku:"ZS-B-EU2-WH",price:11500,cat:"switches",icon:"💡",img:"images/7.jpg",adv:["Premium white glass panel","2-gang ZigBee smart switch","Neutral wire not required","Supports on/off & scene mode","Anti-fingerprint surface coating"]},
+  {id:8,name:"ZigBee Switch 2G Gray",nameHy:"ZigBee Անջատիչ 2Տ Մոխրագույն",sku:"ZS-B-EU2-GY",price:12100,cat:"switches",icon:"💡",img:"images/8.jpg",adv:["Modern gray tempered glass","2-gang independent control","ZigBee 3.0 protocol","Works offline after setup","LED backlight indicator"]},
+  {id:9,name:"ZigBee Scene Switch 4-Key",nameHy:"ZigBee Սցենարային Անջատիչ 4 Կոճակ",sku:"ZT-SR-EU4",price:10800,cat:"switches",icon:"🎬",img:"images/9.jpg",adv:["4 programmable scene buttons","Wireless installation anywhere","Long battery life (CR2032)","Instantly sets mood lighting & devices","Elegant star-ring design"]},
+  {id:10,name:"ZigBee 12-Scene Switch",nameHy:"ZigBee 12 Սցենարային Անջատիչ",sku:"ZT-SY-EU4",price:9300,cat:"switches",icon:"🎬",img:"images/10.jpg",adv:["12 different scene presets","Single tap, double tap, hold actions","Wall-mounted or tabletop use","Pairs with all ZigBee devices","Elegant minimalist design"]},
+  {id:11,name:"ZigBee Switch 3G Light+Scene",nameHy:"ZigBee Անջատիչ 3Տ Լույս+Սցենար",sku:"ZS-SR-EU3S",price:13800,cat:"switches",icon:"💡",img:"images/11.jpg",adv:["2 light controls + 1 scene button","Best of both worlds in one plate","ZigBee mesh reliability","Schedule automations per button","Tempered glass, EU standard"]},
+  {id:12,name:"ZigBee Smart Dimmer Switch 3G",nameHy:"ZigBee Dimmer Անջատիչ 3Տ",sku:"ZS-ZR-EUD3",price:15700,cat:"switches",icon:"🌗",img:"images/12.jpg",adv:["Smooth 0–100% brightness control","3-gang dimmer in one panel","Compatible with LED & halogen","Memory function — remembers last level","Scene & timer support"]},
+  {id:13,name:"ZigBee Hidden Dimmer Module 2G",nameHy:"ZigBee Dimmer Ռելե 2Տ",sku:"ZM-105B-M",price:9200,cat:"switches",icon:"🌗",img:"images/13.jpg",adv:["Hides inside existing switch box","Upgrades any dumb switch to smart","2-channel independent dimming","ZigBee mesh — strong signal","No new wiring required"]},
+  {id:14,name:"ZigBee Hidden Dimmer Module 1G",nameHy:"ZigBee Dimmer Ռելե 1Տ",sku:"ZM-105-M",price:6100,cat:"switches",icon:"🌗",img:"images/14.jpg",adv:["Single channel dimming relay","Compact — fits any EU back box","Pairs with any ZigBee hub","Remote brightness control","Works with existing wall plates"]},
+  {id:15,name:"WiFi Hidden Module 1G",nameHy:"WiFi Ռելե 1Տ",sku:"WM-104N",price:5200,cat:"switches",icon:"🔌",img:"images/15.jpg",adv:["WiFi relay — no hub needed","Installs behind any switch","On/off remote control","Scheduling & automations","10A load capacity"]},
+  {id:16,name:"WiFi Hidden Module 2G",nameHy:"WiFi Ռելե 2Տ",sku:"WM-104BN",price:5700,cat:"switches",icon:"🔌",img:"images/16.jpg",adv:["2-channel WiFi relay module","Hides in wall box neatly","Control two loads independently","Works with Smart Life app","Compact design, easy install"]},
+  {id:17,name:"ZigBee Hidden Module 2G",nameHy:"ZigBee Ռելե 2Տ",sku:"ZRM-104B",price:10000,cat:"switches",icon:"🔌",img:"images/17.jpg",adv:["2-channel ZigBee relay","Reliable mesh networking","Works without neutral wire","Supports power metering","Pairs with most ZigBee hubs"]},
+  {id:18,name:"ZigBee Hidden Module 1G 10A",nameHy:"ZigBee Ռելե 1Տ 10Ա",sku:"ZM-104-M-LT",price:4200,cat:"switches",icon:"🔌",img:"images/18.jpg",adv:["Ultra-compact ZigBee relay","10A safe load capacity","No hub if using ZigBee gateway","Quick pairing in seconds","Supports all standard switches"]},
+  {id:19,name:"ZigBee Hidden Module 1G 16A",nameHy:"ZigBee Ռելե 1Տ 16Ա",sku:"ZM-104-M-16A",price:6900,cat:"switches",icon:"🔌",img:"images/19.jpg",adv:["Heavy-duty 16A relay module","Suitable for high-power circuits","ZigBee 3.0 protocol","Overload & short-circuit protection","Compact design for any back box"]},
+  {id:20,name:"Switch Panel 2G",nameHy:"Անջատիչի Պանել 2Տ",sku:"PP-SR-EU2P",price:1100,cat:"switches",icon:"🔲",img:"images/20.jpg",adv:["Blank 2-gang wall plate","Matches Zigo switch lineup","Available in white and gray","Standard EU 86mm format","Snap-fit no-tool install"]},
+  {id:21,name:"Switch Panel 3G",nameHy:"Անջատիչի Պանել 3Տ",sku:"PP-SR-EU3P",price:1500,cat:"switches",icon:"🔲",img:"images/21.jpg",adv:["Blank 3-gang wall plate","Perfect for mixed switch+scene setups","Matches full Zigo range","Durable ABS construction","EU standard size"]},
+  {id:22,name:"Switch Panel 4G",nameHy:"Անջատիչի Պանել 4Տ",sku:"PP-SR-EU4P",price:2000,cat:"switches",icon:"🔲",img:"images/22.jpg",adv:["Blank 4-gang wall plate","Ideal for large switch banks","Available in two colors","No-drill snap installation","Matches all Zigo plates"]},
 
   // SOCKETS
-  { id:30, name:"WiFi Glass Socket", sku:"WK-EU16M", price:11500, cat:"sockets", icon:"🔌" },
-  { id:31, name:"WiFi Socket USB", sku:"WK-Y-EU-1U1C", price:16300, cat:"sockets", icon:"🔌" },
-  { id:32, name:"WiFi Smart Wall Socket", sku:"WK-Y-EU", price:12900, cat:"sockets", icon:"🔌" },
-  { id:33, name:"ZigBee Smart Socket", sku:"ZK-SR-EU", price:12600, cat:"sockets", icon:"🔌" },
-  { id:34, name:"WiFi Smart Plug", sku:"WP-X-EU16M", price:7300, cat:"sockets", icon:"🔌" },
-  { id:35, name:"Socket USB 30W", sku:"TK-SR-EU-2C1A-30", price:9800, cat:"sockets", icon:"⚡" },
-  { id:36, name:"Smart Power Strip + 3 USB", sku:"WPS-X-EU16M", price:28600, cat:"sockets", icon:"🔌" },
+  {id:30,name:"WiFi Glass Socket",nameHy:"WiFi Ապակե Վարդակ",sku:"WK-EU16M",price:11500,cat:"sockets",icon:"🔌",img:"images/30.jpg",adv:["Tempered glass face — premium look","App & voice control via WiFi","16A load, suitable for appliances","Child safety shutter included","Power consumption tracking"]},
+  {id:31,name:"WiFi Socket USB",nameHy:"WiFi Վարդակ USB-ով",sku:"WK-Y-EU-1U1C",price:16300,cat:"sockets",icon:"🔌",img:"images/31.jpg",adv:["Mains socket + USB-A + USB-C ports","30W fast charging on USB ports","Remote on/off via app","Protects devices from power surges","Counts kWh usage per device"]},
+  {id:32,name:"WiFi Smart Wall Socket",nameHy:"WiFi Պատի Վարդակ",sku:"WK-Y-EU",price:12900,cat:"sockets",icon:"🔌",img:"images/32.jpg",adv:["In-wall smart socket","Flush mount, no bulge","16A with overload protection","Schedule to cut standby power","Works with Alexa & Google"]},
+  {id:33,name:"ZigBee Smart Socket",nameHy:"ZigBee Վարդակ",sku:"ZK-SR-EU",price:12600,cat:"sockets",icon:"🔌",img:"images/33.jpg",adv:["ZigBee mesh reliability","Local control without cloud","Power monitoring built-in","Child-safe shutter","Pairs with any ZigBee hub"]},
+  {id:34,name:"WiFi Smart Plug",nameHy:"WiFi Խրոցակ",sku:"WP-X-EU16M",price:7300,cat:"sockets",icon:"🔌",img:"images/34.jpg",adv:["Plug-in — no electrician needed","App, voice & schedule control","Real-time energy monitoring","Compact, doesn't block adjacent sockets","Works worldwide with EU adapter"]},
+  {id:35,name:"Socket USB 30W",nameHy:"Վարդակ USB 30W",sku:"TK-SR-EU-2C1A-30",price:9800,cat:"sockets",icon:"⚡",img:"images/35.jpg",adv:["USB-C + USB-A fast charge ports","30W total output power","Smart switch for outlet side","Prevents overnight overcharging","Glass panel, elegant finish"]},
+  {id:36,name:"Smart Power Strip + 3 USB",nameHy:"Խելացի Երկարացման Լար + 3 USB",sku:"WPS-X-EU16M",price:28600,cat:"sockets",icon:"🔌",img:"images/36.jpg",adv:["4 individually switchable outlets","3 USB charging ports","Total & per-outlet energy monitoring","Surge & overload protection","App control for each outlet"]},
 
   // SENSORS
-  { id:40, name:"ZigBee Water Leakage Sensor", sku:"ZSS-QY-WL-C", price:8800, cat:"sensors", icon:"💧" },
-  { id:41, name:"ZigBee Door & Window Sensor", sku:"ZSS-JM-GWM-C", price:5900, cat:"sensors", icon:"🚪" },
-  { id:42, name:"WiFi Infrared Alarm / Siren", sku:"WSS-LO-SLA-U", price:11800, cat:"sensors", icon:"🚨" },
-  { id:43, name:"Bluetooth Temp + Humidity + Light Sensor", sku:"BSS-X-THL-C", price:15600, cat:"sensors", icon:"🌡️" },
-  { id:44, name:"ZigBee PIR Motion Sensor", sku:"ZSS-S01-PIR", price:7800, cat:"sensors", icon:"👁️" },
-  { id:45, name:"ZigBee Gas Leakage Detector", sku:"ZSS-S01-GAS", price:13000, cat:"sensors", icon:"💨" },
-  { id:46, name:"ZigBee Temp & Humidity Sensor", sku:"ZSS-KB-TH-LY", price:9200, cat:"sensors", icon:"🌡️" },
-  { id:47, name:"ZigBee Smoke Detector", sku:"ZSS-HM-SSD01", price:18000, cat:"sensors", icon:"🔥" },
-  { id:48, name:"ZigBee Infrared Human Sensor (PIR)", sku:"ZSS-X-PIRL-C", price:12800, cat:"sensors", icon:"👤" },
-  { id:49, name:"WiFi Smart Valve", sku:"WV-QY-EU", price:19600, cat:"sensors", icon:"🚿" },
-  { id:50, name:"ZigBee Smart Valve", sku:"ZV-PM07D", price:18000, cat:"sensors", icon:"🚿" },
+  {id:40,name:"ZigBee Water Leakage Sensor",nameHy:"ZigBee Ջրի Արտահոսքի Տվիչ",sku:"ZSS-QY-WL-C",price:8800,cat:"sensors",icon:"💧",img:"images/40.jpg",adv:["Instant leak detection alert","Place under sink, washing machine, boiler","Works with valve to auto shut off water","Battery powered — no wiring","Loud local alarm + app notification"]},
+  {id:41,name:"ZigBee Door & Window Sensor",nameHy:"Դռան/Պատուհանի Բացման Տվիչ",sku:"ZSS-JM-GWM-C",price:5900,cat:"sensors",icon:"🚪",img:"images/41.jpg",adv:["Open/close detection","Trigger automations when door opens","Security alert if opened unexpectedly","2-year battery life","Slim, discreet design"]},
+  {id:42,name:"WiFi Infrared Alarm/Siren",nameHy:"Լուսաձայնային Ահազանգ",sku:"WSS-LO-SLA-U",price:11800,cat:"sensors",icon:"🚨",img:"images/42.jpg",adv:["110dB siren + strobe light","Triggered by any linked sensor","Remotely arm/disarm from app","Works as standalone alarm","Mounts to wall or ceiling"]},
+  {id:43,name:"Bluetooth Temp+Humidity+Light Sensor",nameHy:"Ջերմ., Խոն., Լուս. Տվիչ",sku:"BSS-X-THL-C",price:15600,cat:"sensors",icon:"🌡️",img:"images/43.jpg",adv:["3-in-1: temp, humidity & light lux","Historical data in app graphs","Triggers HVAC automations","Small coin battery lasts 1 year","Magnetic mount — place anywhere"]},
+  {id:44,name:"ZigBee PIR Motion Sensor",nameHy:"ZigBee Շարժման Տվիչ",sku:"ZSS-S01-PIR",price:7800,cat:"sensors",icon:"👁️",img:"images/44.jpg",adv:["120° wide detection angle","Trigger lights, alerts & scenes","Adjustable sensitivity & timeout","No false alarms — pet-immune option","Compact wall/ceiling mount"]},
+  {id:45,name:"ZigBee Gas Leakage Detector",nameHy:"ZigBee Գազի Արտահոսքի Տվիչ",sku:"ZSS-S01-GAS",price:13000,cat:"sensors",icon:"💨",img:"images/45.jpg",adv:["Detects LPG, natural gas & CO","Instant app alert + local siren","Can trigger smart valve auto-shutoff","Wall-mounted near gas appliances","Self-tests regularly for reliability"]},
+  {id:46,name:"ZigBee Temp & Humidity Sensor",nameHy:"ZigBee Ջերմ. և Խոն. Տվիչ",sku:"ZSS-KB-TH-LY",price:9200,cat:"sensors",icon:"🌡️",img:"images/46.jpg",adv:["Accurate ±0.3°C temperature reading","Humidity ±3% RH accuracy","Trigger thermostat automations","E-ink display shows current readings","18-month battery life"]},
+  {id:47,name:"ZigBee Smoke Detector",nameHy:"ZigBee Ծխի Տվիչ",sku:"ZSS-HM-SSD01",price:18000,cat:"sensors",icon:"🔥",img:"images/47.jpg",adv:["Optical smoke detection","85dB built-in alarm","Instant push notification","Link multiple units to sound together","10-year sensor life span"]},
+  {id:48,name:"ZigBee PIR Human Sensor",nameHy:"ZigBee Ներկայության Տվիչ",sku:"ZSS-X-PIRL-C",price:12800,cat:"sensors",icon:"👤",img:"images/48.jpg",adv:["Passive infrared presence detection","Ideal for auto lighting control","Adjustable delay 10s–30min","Battery or USB powered","360° ceiling mount version available"]},
+  {id:49,name:"WiFi Smart Valve",nameHy:"WiFi Ջրի Փական",sku:"WV-QY-EU",price:19600,cat:"sensors",icon:"🚿",img:"images/49.jpg",adv:["Remotely open/close water supply","Pairs with leak sensors for auto shutoff","App, voice & schedule control","Fits 1/2\" & 3/4\" pipes","Position feedback — know it's closed"]},
+  {id:50,name:"ZigBee Smart Valve",nameHy:"ZigBee Ջրի Փական",sku:"ZV-PM07D",price:18000,cat:"sensors",icon:"🚿",img:"images/50.jpg",adv:["ZigBee controlled water valve","Auto-close on leak detection","Local control retained if WiFi drops","IP65 water-resistant housing","Supports hot & cold water lines"]},
 
   // THERMOSTATS
-  { id:60, name:"WiFi Water Heating Thermostat", sku:"WHT-006-GA", price:21000, cat:"thermostats", icon:"🌡️" },
-  { id:61, name:"WiFi Fan Coil Thermostat", sku:"WHT-6000-EL", price:39000, cat:"thermostats", icon:"❄️" },
-  { id:62, name:"ZigBee Electric Heating Thermostat 16A", sku:"ZHT-SR-GB", price:32500, cat:"thermostats", icon:"🔥" },
-  { id:63, name:"ZigBee Thermostat Water/Gas Boiler 5A", sku:"ZHT-SR-GC", price:31000, cat:"thermostats", icon:"🔥" },
-  { id:64, name:"ZigBee Temperature Controller TRV", sku:"ZTRV-ZX-TV02", price:27100, cat:"thermostats", icon:"🌡️" },
-  { id:65, name:"ZigBee TRV Thermostat", sku:"ZTRV-ZX-TV05", price:16000, cat:"thermostats", icon:"🌡️" },
-  { id:66, name:"Smart Thermostat 2-Pipe Fan Coil", sku:"WHT-002-AL", price:19200, cat:"thermostats", icon:"❄️" },
-  { id:67, name:"Smart Knob Thermostat Fan Coil", sku:"BAC-7000", price:36500, cat:"thermostats", icon:"🎛️" },
-  { id:68, name:"Smart Knob Thermostat Water/Heating", sku:"BAC-9000", price:38700, cat:"thermostats", icon:"🎛️" },
-  { id:69, name:"WiFi Thermostat 2-Pipe Fan Coil", sku:"WHT-009-AL", price:23000, cat:"thermostats", icon:"❄️" },
-  { id:70, name:"WiFi Thermostat Fan Coil Invertor", sku:"L2-T/F-MF", price:49000, cat:"thermostats", icon:"❄️" },
+  {id:60,name:"WiFi Water Heating Thermostat",nameHy:"WiFi Ջեռուցման Թերմոստատ",sku:"WHT-006-GA",price:21000,cat:"thermostats",icon:"🌡️",img:"images/60.jpg",adv:["Controls boiler-fed water heating","Weekly schedule programming","Energy saving mode cuts bills 30%","Large backlit touchscreen","Works with Google & Alexa"]},
+  {id:61,name:"WiFi Fan Coil Thermostat",nameHy:"WiFi Fan Coil Թերմոստատ",sku:"WHT-6000-EL",price:39000,cat:"thermostats",icon:"❄️",img:"images/61.jpg",adv:["Controls fan coil units (FCU)","Heating & cooling mode","3-speed fan control","Smart scheduling — save 25% energy","Away mode auto-setback"]},
+  {id:62,name:"ZigBee Electric Heating Thermostat 16A",nameHy:"ZigBee Էլ. Ջեռուցման Թերմոստատ",sku:"ZHT-SR-GB",price:32500,cat:"thermostats",icon:"🔥",img:"images/62.jpg",adv:["Controls electric underfloor heating","16A — handles high-wattage mats","Floor & air sensor inputs","Child lock for safety","ZigBee for reliable mesh control"]},
+  {id:63,name:"ZigBee Thermostat Water/Gas Boiler",nameHy:"ZigBee Գազ/Ջուր Կաթսայի Թերմ.",sku:"ZHT-SR-GC",price:31000,cat:"thermostats",icon:"🔥",img:"images/63.jpg",adv:["Replaces existing boiler thermostat","5A dry contact output","Auto & manual modes","Geofencing — heats before you arrive","ZigBee mesh, no dead zones"]},
+  {id:64,name:"ZigBee TRV Controller",nameHy:"ZigBee TRV Կարգավորիչ",sku:"ZTRV-ZX-TV02",price:27100,cat:"thermostats",icon:"🌡️",img:"images/64.jpg",adv:["Per-radiator temperature control","Mounts directly on radiator valve","Weekly schedule per room","Open-window detection — stops heating","Battery-powered, no wiring"]},
+  {id:65,name:"ZigBee TRV Thermostat",nameHy:"ZigBee TRV Թերմոստատ",sku:"ZTRV-ZX-TV05",price:16000,cat:"thermostats",icon:"🌡️",img:"images/65.jpg",adv:["Retrofit to existing radiator valves","Room-by-room efficiency","Built-in temperature display","Child lock mode","Works with any ZigBee hub"]},
+  {id:66,name:"Smart Thermostat 2-Pipe Fan Coil",nameHy:"Խելացի Թերմ. FanCoil 2 Խողովակ",sku:"WHT-002-AL",price:19200,cat:"thermostats",icon:"❄️",img:"images/66.jpg",adv:["For 2-pipe fan coil systems","Heating & cooling in one unit","Touchscreen with real-time temp","Auto fan speed control","Energy usage reporting in app"]},
+  {id:67,name:"Smart Knob Thermostat Fan Coil",nameHy:"Knob Թերմոստատ Fan Coil",sku:"BAC-7000",price:36500,cat:"thermostats",icon:"🎛️",img:"images/67.jpg",adv:["Rotary knob + touchscreen hybrid","Premium hotel-style look","Controls 2-pipe & 4-pipe FCU","Backlist display readable in dark","Compatible with BACnet & Modbus"]},
+  {id:68,name:"Smart Knob Thermostat Water/Heating",nameHy:"Knob Թերմ. Ջուր/Ջեռուցում",sku:"BAC-9000",price:38700,cat:"thermostats",icon:"🎛️",img:"images/68.jpg",adv:["Premium knob thermostat for boilers","Heating & DHW control","Large e-paper display","Frost protection mode","Supports OpenTherm protocol"]},
+  {id:69,name:"WiFi Thermostat 2-Pipe Fan Coil",nameHy:"WiFi Թերմ. 2 Խողովակ Fan Coil",sku:"WHT-009-AL",price:23000,cat:"thermostats",icon:"❄️",img:"images/69.jpg",adv:["WiFi — no hub required","2-pipe FCU control","Multi-week smart scheduling","Adaptive start — learns warm-up time","Works with Alexa & Google Home"]},
+  {id:70,name:"WiFi Fan Coil Invertor Thermostat",nameHy:"WiFi Ինվերտոր Fan Coil Թերմ.",sku:"L2-T/F-MF",price:49000,cat:"thermostats",icon:"❄️",img:"images/70.jpg",adv:["Controls VRF & inverter units","0–10V or PWM output","Precise temperature ±0.5°C","Auto changeover heat/cool","Premium touch display"]},
 
   // LIGHTING
-  { id:80, name:"WiFi Smart Bulb E27 (14W, RGBCW)", sku:"WB-TDA14-E27", price:4800, cat:"lighting", icon:"💡" },
-  { id:81, name:"WiFi Smart Bulb E14", sku:"WB-TDC6-E14", price:3700, cat:"lighting", icon:"💡" },
-  { id:82, name:"WiFi Smart Bulb E27 (5W, RGBCW)", sku:"WB-TDS5-E27", price:7200, cat:"lighting", icon:"💡" },
-  { id:83, name:"WiFi Smart Downlight", sku:"WB-LZD10-RCW", price:9000, cat:"lighting", icon:"🔆" },
-  { id:84, name:"WiFi Smart LED Strip 5m", sku:"WLS-TD-RGB-5M", price:14800, cat:"lighting", icon:"🌈" },
+  {id:80,name:"WiFi Smart Bulb E27 14W RGBCW",nameHy:"WiFi Խելացի Լամպ E27 14W",sku:"WB-TDA14-E27",price:4800,cat:"lighting",icon:"💡",img:"images/80.jpg",adv:["16 million colour options","Warm to cool white tunable","Works without hub via WiFi","Group control for multiple bulbs","Music sync mode for parties"]},
+  {id:81,name:"WiFi Smart Bulb E14",nameHy:"WiFi Խելացի Լամպ E14",sku:"WB-TDC6-E14",price:3700,cat:"lighting",icon:"💡",img:"images/81.jpg",adv:["Small E14 candle fitting","RGBCW full colour spectrum","6W — replaces 40W halogen","App, voice & schedule dimming","Works in chandelier & wall lights"]},
+  {id:82,name:"WiFi Smart Bulb E27 5W",nameHy:"WiFi Խելացի Լամպ E27 5W",sku:"WB-TDS5-E27",price:7200,cat:"lighting",icon:"💡",img:"images/82.jpg",adv:["5W RGBCW smart bulb","Vivid colour rendering CRI>90","Instant on, no warm-up","50,000-hour LED lifetime","Compatible with Tuya ecosystem"]},
+  {id:83,name:"WiFi Smart Downlight",nameHy:"WiFi Առաստաղի Լամպ",sku:"WB-LZD10-RCW",price:9000,cat:"lighting",icon:"🔆",img:"images/83.jpg",adv:["Recessed ceiling downlight","Warm-cool white tunable","10W — bright 800 lm output","Flush ceiling install, no bracket","Dimmable 1–100% smoothly"]},
+  {id:84,name:"WiFi LED Strip 5m RGBCW",nameHy:"WiFi LED Ժապավեն 5մ",sku:"WLS-TD-RGB-5M",price:14800,cat:"lighting",icon:"🌈",img:"images/84.jpg",adv:["5 metres flexible LED strip","Full RGBCW colour mixing","Cuttable & extendable","Adhesive backing — stick anywhere","Sync with music or movies"]},
 
   // CURTAINS
-  { id:90, name:"WiFi Curtain Motor 2.2m", sku:"WC-PJ220", price:59000, cat:"curtains", icon:"🪟" },
-  { id:91, name:"WiFi Curtain Motor 3.2m", sku:"WC-PJ320", price:63000, cat:"curtains", icon:"🪟" },
-  { id:92, name:"WiFi Curtain Motor 4.2m", sku:"WC-PJ420", price:67600, cat:"curtains", icon:"🪟" },
-  { id:93, name:"WiFi Curtain Motor 5.2m", sku:"WC-PJ520", price:70000, cat:"curtains", icon:"🪟" },
-  { id:94, name:"WiFi Curtain Motor 6.2m", sku:"WC-PJ620", price:74000, cat:"curtains", icon:"🪟" },
-  { id:95, name:"Bluetooth Roller Curtain Motor", sku:"BC-LS-EU", price:40800, cat:"curtains", icon:"🪟" },
-  { id:96, name:"ZigBee Smart Curtain Switch", sku:"ZRS-SR-EUC", price:14600, cat:"curtains", icon:"🔲" },
-  { id:97, name:"Smart Curtain Robot", sku:"ZC-RB01-A", price:25600, cat:"curtains", icon:"🤖" },
+  {id:90,name:"WiFi Curtain Motor 2.2m",nameHy:"WiFi Վարագույրի Շարժիչ 2.2մ",sku:"WC-PJ220",price:59000,cat:"curtains",icon:"🪟",img:"images/90.jpg",adv:["For curtain rails up to 2.2m","Silent brushless DC motor","App, voice & schedule control","Manual override always available","Auto-calibrates to rail length"]},
+  {id:91,name:"WiFi Curtain Motor 3.2m",nameHy:"WiFi Վարագույրի Շարժիչ 3.2մ",sku:"WC-PJ320",price:63000,cat:"curtains",icon:"🪟",img:"images/91.jpg",adv:["Rails up to 3.2m supported","Heavy curtains up to 35kg","Ultra-quiet <35dB operation","Sunrise/sunset auto-schedule","Compatible with Amazon Alexa"]},
+  {id:92,name:"WiFi Curtain Motor 4.2m",nameHy:"WiFi Վարագույրի Շարժիչ 4.2մ",sku:"WC-PJ420",price:67600,cat:"curtains",icon:"🪟",img:"images/92.jpg",adv:["Long rail up to 4.2m","High torque for heavy drapes","Smooth start/stop algorithm","Partial open positioning","Pairs with light sensor for auto-close"]},
+  {id:93,name:"WiFi Curtain Motor 5.2m",nameHy:"WiFi Վարագույրի Շարժիչ 5.2մ",sku:"WC-PJ520",price:70000,cat:"curtains",icon:"🪟",img:"images/93.jpg",adv:["Extra-wide 5.2m rail coverage","Powerful motor for room dividers","Memory positioning","App grouping — sync multiple rooms","2-year warranty"]},
+  {id:94,name:"WiFi Curtain Motor 6.2m",nameHy:"WiFi Վարագույրի Շարժիչ 6.2մ",sku:"WC-PJ620",price:74000,cat:"curtains",icon:"🪟",img:"images/94.jpg",adv:["Longest rail — 6.2m coverage","Hotel & commercial grade","Full speed & position control","Works with any Tuya smart home","Easy installation guide included"]},
+  {id:95,name:"Bluetooth Roller Curtain Motor",nameHy:"Bluetooth Ռոլ Վարագույրի Շարժիչ",sku:"BC-LS-EU",price:40800,cat:"curtains",icon:"🪟",img:"images/95.jpg",adv:["For roller & venetian blinds","Bluetooth low-energy control","Rechargeable battery — no cables","Works in remote areas without WiFi","Quiet 32dB motor"]},
+  {id:96,name:"ZigBee Smart Curtain Switch",nameHy:"ZigBee Վարագույրի Անջատիչ",sku:"ZRS-SR-EUC",price:14600,cat:"curtains",icon:"🔲",img:"images/96.jpg",adv:["Wall switch for curtain motors","Open, stop, close buttons","ZigBee — part of whole-home mesh","Replaces existing curtain switch","Glass panel matches Zigo switches"]},
+  {id:97,name:"Smart Curtain Robot",nameHy:"Վարագույր Բացող Ռոբոտ",sku:"ZC-RB01-A",price:25600,cat:"curtains",icon:"🤖",img:"images/97.jpg",adv:["Clips onto existing curtain track","No installation — zero effort","App & voice control","Rechargeable via USB-C","Works on any standard curtain rail"]},
 
   // SECURITY
-  { id:100, name:"WiFi Smart Doorbell", sku:"WDB-TY-B20", price:46800, cat:"security", icon:"🔔" },
-  { id:101, name:"WiFi Smart Door Lock (with core)", sku:"WDL-F2-3585", price:69000, cat:"security", icon:"🔐" },
-  { id:102, name:"WiFi Smart Door Lock (no core)", sku:"WDL-B2", price:36000, cat:"security", icon:"🔐" },
-  { id:103, name:"WiFi Smart Door Lock (compact)", sku:"WDL-R5-2", price:42000, cat:"security", icon:"🔐" },
-  { id:104, name:"WiFi Smart Door Lock X1", sku:"WDL-X1", price:49000, cat:"security", icon:"🔐" },
-  { id:105, name:"WiFi Smart Camera (Indoor)", sku:"WCM-ZK-P04", price:21200, cat:"security", icon:"📷" },
-  { id:106, name:"WiFi Smart Camera (Solar)", sku:"WCM-S24-S", price:36000, cat:"security", icon:"📷" },
-  { id:107, name:"Smart Solar Camera 4G", sku:"4GCM-G20", price:67200, cat:"security", icon:"📷" },
+  {id:100,name:"WiFi Smart Doorbell",nameHy:"WiFi Դռան Զանգ",sku:"WDB-TY-B20",price:46800,cat:"security",icon:"🔔",img:"images/100.jpg",adv:["1080p HD video camera","Two-way audio intercom","Motion detection with zones","Visitor history in app","Night vision built-in"]},
+  {id:101,name:"WiFi Door Lock (with core)",nameHy:"WiFi Դռան Փական (միջուկով)",sku:"WDL-F2-3585",price:69000,cat:"security",icon:"🔐",img:"images/101.jpg",adv:["Fingerprint + PIN + card + app + key","Auto-lock after door closes","Access log of every entry","Temporary access codes for guests","Anti-tamper alarm"]},
+  {id:102,name:"WiFi Door Lock (no core)",nameHy:"WiFi Դռան Փական (առանց միջուկի)",sku:"WDL-B2",price:36000,cat:"security",icon:"🔐",img:"images/102.jpg",adv:["Fits existing lock cylinder","Retrofit upgrade — no door change","App & PIN unlocking","Battery powered — 1 year life","Compact slim design"]},
+  {id:103,name:"WiFi Door Lock (compact)",nameHy:"WiFi Դռան Փական (փոքր)",sku:"WDL-R5-2",price:42000,cat:"security",icon:"🔐",img:"images/103.jpg",adv:["Slim profile for narrow doors","Fingerprint + PIN + app","Fast 0.5s fingerprint recognition","Share access with family","Battery life indicator in app"]},
+  {id:104,name:"WiFi Smart Door Lock X1",nameHy:"WiFi Դռան Փական X1",sku:"WDL-X1",price:49000,cat:"security",icon:"🔐",img:"images/104.jpg",adv:["Premium fingerprint door lock","360° capacitive fingerprint reader","Alarm on incorrect attempts ×5","Remote unlock for deliveries","Matches modern door styles"]},
+  {id:105,name:"WiFi Smart Camera (Indoor)",nameHy:"WiFi Ներքին Տեսախցիկ",sku:"WCM-ZK-P04",price:21200,cat:"security",icon:"📷",img:"images/105.jpg",adv:["1080p Full HD live view","360° pan & tilt coverage","Two-way audio","Motion & sound alerts","Cloud + local SD card storage"]},
+  {id:106,name:"WiFi Smart Camera (Solar)",nameHy:"WiFi Արեգ. Տեսախցիկ",sku:"WCM-S24-S",price:36000,cat:"security",icon:"📷",img:"images/106.jpg",adv:["Solar-powered — no cable needed","1080p outdoor camera","PIR motion detection","IP66 weatherproof rated","Built-in siren & spotlight"]},
+  {id:107,name:"Smart Solar Camera 4G",nameHy:"4G Արեգ. Տեսախցիկ",sku:"4GCM-G20",price:67200,cat:"security",icon:"📷",img:"images/107.jpg",adv:["4G LTE — no WiFi needed","Solar + battery backup","Works in remote locations","Color night vision","Instant motion clip to phone"]},
 
   // HUBS & CONTROLLERS
-  { id:110, name:"Multi-mode Gateway ZigBee/BT (Pro)", sku:"MHUB-YR-W-IR", price:22500, cat:"hubs", icon:"📡" },
-  { id:111, name:"Multi-mode Gateway ZigBee/BT (Lite)", sku:"MHUB-W-Q", price:12000, cat:"hubs", icon:"📡" },
-  { id:112, name:"Central Control Panel + Alexa", sku:"CCP-TY-EU-LN", price:108600, cat:"hubs", icon:"🖥️" },
-  { id:113, name:"EU Control Panel Mini", sku:"CCP-S01-EU", price:47000, cat:"hubs", icon:"🖥️" },
-  { id:114, name:"EU Control Panel 8 inch", sku:"CCP-S02", price:162000, cat:"hubs", icon:"🖥️" },
-  { id:115, name:"EU Control Panel 10 inch", sku:"CCP-TY10-EU", price:220000, cat:"hubs", icon:"🖥️" },
-  { id:116, name:"WiFi Handheld Smart Screen", sku:"CCP-Z1-MS", price:68400, cat:"hubs", icon:"📱" },
-  { id:117, name:"Google Nest Smart Speaker", sku:"GA00781-EU", price:34600, cat:"hubs", icon:"🔊" },
-  { id:118, name:"Infrared Remote Control", sku:"UFO-R6", price:6100, cat:"hubs", icon:"📻" },
-  { id:119, name:"HarmanKardon Citation 500", sku:"HK-500", price:262000, cat:"hubs", icon:"🔊" },
-  { id:120, name:"HarmanKardon Citation 700", sku:"HK-700", price:397000, cat:"hubs", icon:"🔊" },
+  {id:110,name:"Multi-mode Gateway Pro",nameHy:"ZigBee/BT Հաբ Pro",sku:"MHUB-YR-W-IR",price:22500,cat:"hubs",icon:"📡",img:"images/110.jpg",adv:["ZigBee + Bluetooth + IR all-in-one","Controls TVs, ACs via infrared","Links 128+ ZigBee devices","Local automation — works without cloud","Ethernet + WiFi connectivity"]},
+  {id:111,name:"Multi-mode Gateway Lite",nameHy:"ZigBee/BT Հաբ Lite",sku:"MHUB-W-Q",price:12000,cat:"hubs",icon:"📡",img:"images/111.jpg",adv:["Compact ZigBee + BT hub","Plug-in design — no mounting","Supports 64 devices","Fast local processing","Easy setup via Tuya app"]},
+  {id:112,name:"Central Control Panel + Alexa",nameHy:"Կենտ. Վահ. + Alexa",sku:"CCP-TY-EU-LN",price:108600,cat:"hubs",icon:"🖥️",img:"images/112.jpg",adv:["Built-in Amazon Alexa speaker","Controls entire smart home","8\" touchscreen display","Works as a ZigBee hub","Video intercom compatible"]},
+  {id:113,name:"EU Control Panel Mini",nameHy:"EU Վահ. Mini",sku:"CCP-S01-EU",price:47000,cat:"hubs",icon:"🖥️",img:"images/113.jpg",adv:["Compact wall-mount panel","Controls all Tuya smart devices","Scene shortcuts on screen","Replace existing switch panel","Fast 1.5GHz processor"]},
+  {id:114,name:"EU Control Panel 8 inch",nameHy:"EU Վահ. 8 Դյույմ",sku:"CCP-S02",price:162000,cat:"hubs",icon:"🖥️",img:"images/114.jpg",adv:["8\" HD touchscreen hub","Controls full smart home","Camera preview on screen","Customizable widget dashboard","Built-in ZigBee gateway"]},
+  {id:115,name:"EU Control Panel 10 inch",nameHy:"EU Վահ. 10 Դյույմ",sku:"CCP-TY10-EU",price:220000,cat:"hubs",icon:"🖥️",img:"images/115.jpg",adv:["10\" premium home hub","Largest display in Zigo range","Room camera & video call support","Full Tuya ecosystem control","Alexa & Google built-in"]},
+  {id:116,name:"WiFi Handheld Smart Screen",nameHy:"WiFi Հեռ. Կառ. Վահ.",sku:"CCP-Z1-MS",price:68400,cat:"hubs",icon:"📱",img:"images/116.jpg",adv:["Portable tablet-style controller","Battery + charging dock included","Full home control on the go","Customizable room dashboards","No phone needed — dedicated device"]},
+  {id:117,name:"Google Nest Smart Speaker",nameHy:"Google Nest Խ. Բ.",sku:"GA00781-EU",price:34600,cat:"hubs",icon:"🔊",img:"images/117.jpg",adv:["Google Assistant built-in","Controls Zigo devices by voice","Premium 360° room-filling sound","Intercom between Nest speakers","Streams music, podcasts & more"]},
+  {id:118,name:"Infrared Remote Control",nameHy:"Ինֆ. Հ. Կ. Վ.",sku:"UFO-R6",price:6100,cat:"hubs",icon:"📻",img:"images/118.jpg",adv:["Controls any IR appliance","Learn any remote control code","Works with AC, TV, fan & more","Integrates into Tuya automations","Small discreet form factor"]},
+  {id:119,name:"HarmanKardon Citation 500",nameHy:"HarmanKardon Citation 500",sku:"HK-500",price:262000,cat:"hubs",icon:"🔊",img:"images/119.jpg",adv:["Audiophile-grade smart speaker","360° Omnidirectional sound","Google Assistant & Chromecast","Alexa-compatible","Premium fabric design"]},
+  {id:120,name:"HarmanKardon Citation 700",nameHy:"HarmanKardon Citation 700",sku:"HK-700",price:397000,cat:"hubs",icon:"🔊",img:"images/120.jpg",adv:["Flagship HarmanKardon speaker","MultiBeam 360° surround sound","Room correction via microphones","Google Assistant built-in","Pairs with Citation series for stereo"]},
 
   // ELECTRICAL
-  { id:130, name:"WiFi Circuit Breaker 16A", sku:"WCB-SC-4P16", price:40200, cat:"electrical", icon:"⚡" },
-  { id:131, name:"WiFi Circuit Breaker 32A", sku:"WCB-SC-4P32", price:40200, cat:"electrical", icon:"⚡" },
-  { id:132, name:"WiFi Smart Breaker 63A/2P", sku:"WCB-SC-2P64", price:28900, cat:"electrical", icon:"⚡" },
-  { id:133, name:"WiFi Smart Meter", sku:"WM", price:18800, cat:"electrical", icon:"📊" },
-  { id:134, name:"WiFi Intelligent Relay Switch", sku:"WCB-A5-TW", price:8100, cat:"electrical", icon:"⚡" },
-  { id:135, name:"WiFi Voltage Circuit Breaker", sku:"WM-AXA1-TW", price:11600, cat:"electrical", icon:"⚡" },
-  { id:136, name:"WiFi Smart Garage Door Opener", sku:"WM-102-M-EU", price:9000, cat:"electrical", icon:"🚗" },
+  {id:130,name:"WiFi Circuit Breaker 16A",nameHy:"WiFi Ապահ. Անջ. 16Ա",sku:"WCB-SC-4P16",price:40200,cat:"electrical",icon:"⚡",img:"images/130.jpg",adv:["Remote on/off per circuit","16A 4-pole DIN rail mount","Overload & short-circuit protection","Energy usage per circuit","Trip alert sent to phone instantly"]},
+  {id:131,name:"WiFi Circuit Breaker 32A",nameHy:"WiFi Ապ. Անջ. 32Ա",sku:"WCB-SC-4P32",price:40200,cat:"electrical",icon:"⚡",img:"images/131.jpg",adv:["Heavy duty 32A 4-pole breaker","For 3-phase or large single-phase loads","Remote reset after trip","Power monitoring dashboard","DIN rail standard fit"]},
+  {id:132,name:"WiFi Smart Breaker 63A/2P",nameHy:"WiFi Ապ. Անջ. 63Ա",sku:"WCB-SC-2P64",price:28900,cat:"electrical",icon:"⚡",img:"images/132.jpg",adv:["Main board 63A breaker","Remotely cut power to whole property","App alert on overload","Perfect for holiday home control","2-pole DIN rail fit"]},
+  {id:133,name:"WiFi Smart Meter",nameHy:"WiFi Խ. Հաշ.",sku:"WM",price:18800,cat:"electrical",icon:"📊",img:"images/133.jpg",adv:["Real-time energy consumption data","Historical usage graphs in app","Works with any electricity supply","Alert when usage exceeds threshold","Tracks solar production too"]},
+  {id:134,name:"WiFi Intelligent Relay Switch",nameHy:"WiFi Ավտ. Ռ.",sku:"WCB-A5-TW",price:8100,cat:"electrical",icon:"⚡",img:"images/134.jpg",adv:["High-current relay for big loads","Remote switch heavy appliances","Voltage protection built-in","DIN rail or direct wire","Suitable for pumps & motors"]},
+  {id:135,name:"WiFi Voltage Circuit Breaker",nameHy:"WiFi Լ. Ռ.",sku:"WM-AXA1-TW",price:11600,cat:"electrical",icon:"⚡",img:"images/135.jpg",adv:["Protects appliances from over/under voltage","Cuts power automatically on anomaly","App notification of voltage event","Auto-restore after safe conditions","Fits standard distribution board"]},
+  {id:136,name:"WiFi Garage Door Opener",nameHy:"WiFi Ավ. Բ. Կ.",sku:"WM-102-M-EU",price:9000,cat:"electrical",icon:"🚗",img:"images/136.jpg",adv:["Open/close garage remotely","Real-time door state feedback","Share access with family","Works with existing garage motor","Left-open reminder notification"]},
 ];
 
 let cart = {};
 let activeCategory = 'all';
 let searchQuery = '';
+let isUnlocked = sessionStorage.getItem('zigoUnlocked') === '1';
 
-function fmt(n) {
-  return '֏ ' + n.toLocaleString('en-US');
+// ── EMAIL STORAGE ──
+function saveEmail(name, email) {
+  let emails = JSON.parse(localStorage.getItem('zigoEmails') || '[]');
+  emails.push({ name, email, date: new Date().toISOString() });
+  localStorage.setItem('zigoEmails', JSON.stringify(emails));
 }
+function downloadEmails() {
+  const emails = JSON.parse(localStorage.getItem('zigoEmails') || '[]');
+  if (!emails.length) { alert('No emails collected yet.'); return; }
+  const csv = 'Name,Email,Date\n' + emails.map(e => `"${e.name}","${e.email}","${e.date}"`).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'zigo_leads_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// Admin shortcut
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    const p = document.getElementById('adminPanel');
+    const emails = JSON.parse(localStorage.getItem('zigoEmails') || '[]');
+    document.getElementById('adminCount').textContent = emails.length + ' email(s) collected';
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  }
+});
+
+// ── GATE ──
+function openGate() {
+  if (isUnlocked) { scrollToCalc(); return; }
+  document.getElementById('gateOverlay').classList.add('open');
+}
+function submitGate() {
+  const name = document.getElementById('gateName').value.trim();
+  const email = document.getElementById('gateEmail').value.trim();
+  const terms = document.getElementById('gateTerms').checked;
+  if (!name) { alert(lang==='hy'?'Մուտքագրեք ձեր անունը':'Please enter your name'); return; }
+  if (!email || !/\S+@\S+\.\S+/.test(email)) { alert(lang==='hy'?'Մուտքագրեք վավեր էլ-փոստ':'Please enter a valid email'); return; }
+  if (!terms) { alert(lang==='hy'?'Համաձայնեք պայմաններին':'Please agree to the terms'); return; }
+  saveEmail(name, email);
+  isUnlocked = true;
+  sessionStorage.setItem('zigoUnlocked', '1');
+  document.getElementById('gateOverlay').classList.remove('open');
+  document.getElementById('calcLock').style.display = 'none';
+  document.getElementById('calcContent').style.display = 'block';
+  renderProducts();
+  renderQuote();
+  scrollToCalc();
+}
+function scrollToCalc() {
+  document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
+}
+
+// If already unlocked on load
+if (isUnlocked) {
+  document.getElementById('calcLock').style.display = 'none';
+  document.getElementById('calcContent').style.display = 'block';
+}
+
+// ── PRODUCTS ──
+function fmt(n) { return '֏ ' + n.toLocaleString('en-US'); }
 
 function renderProducts() {
   const grid = document.getElementById('productsGrid');
@@ -1072,9 +593,10 @@ function renderProducts() {
   let shown = 0;
 
   products.forEach(p => {
-    const matchSearch = !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
-    const matchCat = activeCategory === 'all' || p.cat === activeCategory;
-    if (!matchSearch || !matchCat) return;
+    const nm = lang === 'hy' ? p.nameHy : p.name;
+    const matchS = !q || nm.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+    const matchC = activeCategory === 'all' || p.cat === activeCategory;
+    if (!matchS || !matchC) return;
     shown++;
 
     const inCart = !!cart[p.id];
@@ -1082,150 +604,153 @@ function renderProducts() {
     card.className = 'product-card' + (inCart ? ' in-cart' : '');
     card.id = 'card-' + p.id;
     card.innerHTML = `
-      <div class="product-icon">${p.icon}</div>
-      <div class="product-name">${p.name}</div>
-      <div class="product-sku">${p.sku}</div>
-      <div class="product-price">${fmt(p.price)}</div>
-      <button class="product-add-btn" onclick="addToCart(${p.id})">
-        ${inCart ? '✓ Added' : '+ Add to Quote'}
-      </button>
-    `;
+      <div class="product-img-wrap">
+        <img src="${p.img}" alt="${nm}" onload="this.classList.add('loaded')" onerror="this.style.display='none'"/>
+        <span class="p-icon">${p.icon}</span>
+      </div>
+      <div class="in-cart-badge">✓</div>
+      <div class="product-body">
+        <div class="product-name">${nm}</div>
+        <div class="product-sku">${p.sku}</div>
+        <div class="product-price">${fmt(p.price)}</div>
+        <div class="product-actions">
+          <button class="product-add-btn" onclick="addToCart(${p.id})">${inCart ? (lang==='hy'?'✓ Ավելացված':'✓ Added') : (lang==='hy'?'+ Ավելացնել':'+ Add to Quote')}</button>
+          <button class="product-info-btn" onclick="openAdv(${p.id})" title="Advantages">ℹ️</button>
+        </div>
+      </div>`;
     grid.appendChild(card);
   });
 
-  if (shown === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-light);font-size:14px;">No products found. Try a different search.</div>';
+  if (!shown) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-light);font-size:13px;">' + (lang==='hy'?'Ապրանք չի գտնվել':'No products found') + '</div>';
   }
 }
 
 function addToCart(id) {
-  if (cart[id]) {
-    cart[id].qty++;
-  } else {
-    const p = products.find(x => x.id === id);
-    cart[id] = { ...p, qty: 1 };
-  }
+  if (cart[id]) { cart[id].qty++; }
+  else { cart[id] = { ...products.find(x=>x.id===id), qty:1 }; }
   updateCard(id);
   renderQuote();
 }
-
 function updateCard(id) {
-  const card = document.getElementById('card-' + id);
+  const card = document.getElementById('card-'+id);
   if (!card) return;
   const inCart = !!cart[id];
   card.className = 'product-card' + (inCart ? ' in-cart' : '');
   const btn = card.querySelector('.product-add-btn');
-  if (btn) btn.textContent = inCart ? '✓ Added' : '+ Add to Quote';
+  if (btn) btn.textContent = inCart ? (lang==='hy'?'✓ Ավելացված':'✓ Added') : (lang==='hy'?'+ Ավելացնել':'+ Add to Quote');
 }
-
-function changeQty(id, delta) {
+function changeQty(id, d) {
   if (!cart[id]) return;
-  cart[id].qty += delta;
-  if (cart[id].qty <= 0) {
-    delete cart[id];
-    updateCard(id);
-  }
+  cart[id].qty += d;
+  if (cart[id].qty <= 0) { delete cart[id]; updateCard(id); }
   renderQuote();
 }
-
-function removeItem(id) {
-  delete cart[id];
-  updateCard(id);
-  renderQuote();
-}
+function removeItem(id) { delete cart[id]; updateCard(id); renderQuote(); }
 
 function renderQuote() {
   const items = Object.values(cart);
-  const countEl = document.getElementById('itemsCount');
-  const emptyEl = document.getElementById('quoteEmpty');
-  const itemsContainer = document.getElementById('quoteItems');
+  const totalQty = items.reduce((s,x)=>s+x.qty,0);
+  document.getElementById('itemsCount').textContent = totalQty;
+  const container = document.getElementById('quoteItems');
+  container.querySelectorAll('.quote-item').forEach(el=>el.remove());
+  const empty = document.getElementById('quoteEmpty');
+  empty.style.display = items.length ? 'none' : 'block';
 
-  const totalQty = items.reduce((s, x) => s + x.qty, 0);
-  countEl.textContent = totalQty + ' item' + (totalQty !== 1 ? 's' : '');
+  items.forEach(item => {
+    const nm = lang==='hy' ? item.nameHy : item.name;
+    const row = document.createElement('div');
+    row.className = 'quote-item';
+    row.innerHTML = `
+      <div class="quote-item-info">
+        <div class="quote-item-name" title="${nm}">${nm}</div>
+        <div class="quote-item-price">${fmt(item.price)} each</div>
+      </div>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+      </div>
+      <div class="quote-item-total">${fmt(item.price*item.qty)}</div>
+      <button class="remove-btn" onclick="removeItem(${item.id})">×</button>`;
+    container.appendChild(row);
+  });
 
-  // Remove old item rows
-  const existing = itemsContainer.querySelectorAll('.quote-item');
-  existing.forEach(el => el.remove());
-
-  if (items.length === 0) {
-    emptyEl.style.display = 'block';
-  } else {
-    emptyEl.style.display = 'none';
-    items.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'quote-item';
-      row.innerHTML = `
-        <div class="quote-item-info">
-          <div class="quote-item-name" title="${item.name}">${item.name}</div>
-          <div class="quote-item-price">${fmt(item.price)} each</div>
-        </div>
-        <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
-          <span class="qty-num">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-        </div>
-        <div class="quote-item-total">${fmt(item.price * item.qty)}</div>
-        <button class="remove-btn" onclick="removeItem(${item.id})">×</button>
-      `;
-      itemsContainer.appendChild(row);
-    });
-  }
-
-  const subtotal = items.reduce((s, x) => s + x.price * x.qty, 0);
-  const installation = Math.round(subtotal * 0.15);
-  const total = subtotal + installation;
-
-  document.getElementById('subtotalVal').textContent = fmt(subtotal);
-  document.getElementById('installVal').textContent = fmt(installation);
-  document.getElementById('totalVal').textContent = fmt(total);
-  document.getElementById('quoteCta').disabled = items.length === 0;
+  const sub = items.reduce((s,x)=>s+x.price*x.qty, 0);
+  const inst = Math.round(sub*0.15);
+  document.getElementById('subtotalVal').textContent = fmt(sub);
+  document.getElementById('installVal').textContent = fmt(inst);
+  document.getElementById('totalVal').textContent = fmt(sub+inst);
+  document.getElementById('quoteCta').disabled = !items.length;
 }
 
 function clearQuote() {
   const ids = Object.keys(cart).map(Number);
   cart = {};
-  ids.forEach(id => updateCard(id));
+  ids.forEach(updateCard);
   renderQuote();
 }
 
 function filterCategory(cat, btn) {
   activeCategory = cat;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderProducts();
 }
-
 function filterProducts() {
   searchQuery = document.getElementById('searchInput').value;
   renderProducts();
 }
 
+// ── ADVANTAGES ──
+function openAdv(id) {
+  const p = products.find(x=>x.id===id);
+  document.getElementById('advName').textContent = lang==='hy' ? p.nameHy : p.name;
+  document.getElementById('advPrice').textContent = fmt(p.price);
+  document.getElementById('advList').innerHTML = p.adv.map(a=>`<li>${a}</li>`).join('');
+  document.getElementById('advOverlay').classList.add('open');
+}
+function closeAdv() { document.getElementById('advOverlay').classList.remove('open'); }
+document.getElementById('advOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeAdv(); });
+
+// ── QUOTE MODAL ──
 function openModal() {
   const items = Object.values(cart);
-  const subtotal = items.reduce((s, x) => s + x.price * x.qty, 0);
-  const total = subtotal + Math.round(subtotal * 0.15);
-  const names = items.map(x => `${x.name} ×${x.qty}`).join(', ');
-  document.getElementById('modalSummary').innerHTML =
-    `<strong>${items.length} product type(s)</strong> selected · <strong>${fmt(total)}</strong> estimated total<br><span style="font-size:11px;color:var(--text-light)">${names}</span>`;
+  const sub = items.reduce((s,x)=>s+x.price*x.qty,0);
+  const total = sub + Math.round(sub*0.15);
+  const names = items.map(x=>`${lang==='hy'?x.nameHy:x.name} ×${x.qty}`).join(', ');
+  document.getElementById('modalSummary').innerHTML = `<strong>${items.length}</strong> product type(s) · <strong>${fmt(total)}</strong> estimated total<br><span style="font-size:11px;color:var(--text-light)">${names}</span>`;
+  const gate = document.getElementById('gateEmail').value;
+  document.getElementById('reqEmail').value = gate || '';
   document.getElementById('modalOverlay').classList.add('open');
 }
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 function submitQuote() {
-  alert('Thank you! Your quote request has been sent. We will contact you within 24 hours.');
+  const first = document.getElementById('reqFirst').value.trim();
+  const phone = document.getElementById('reqPhone').value.trim();
+  if (!first) { alert('Please enter your name'); return; }
+  if (!phone) { alert('Please enter your phone'); return; }
+  // Save to localStorage as lead
+  const items = Object.values(cart);
+  const sub = items.reduce((s,x)=>s+x.price*x.qty,0);
+  let leads = JSON.parse(localStorage.getItem('zigoLeads')||'[]');
+  leads.push({
+    name: first + ' ' + document.getElementById('reqLast').value,
+    phone, email: document.getElementById('reqEmail').value,
+    notes: document.getElementById('reqNotes').value,
+    total: sub + Math.round(sub*0.15),
+    items: items.map(x=>({name:x.name, qty:x.qty, price:x.price})),
+    date: new Date().toISOString()
+  });
+  localStorage.setItem('zigoLeads', JSON.stringify(leads));
   closeModal();
+  alert(lang==='hy' ? 'Շնորհակալություն! Մենք կդիմենք ձեզ 24 ժամվա ընթացքում։' : 'Thank you! We will contact you within 24 hours.');
 }
-
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+document.getElementById('gateOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) document.getElementById('gateOverlay').classList.remove('open'); });
 
 // Init
-renderProducts();
-renderQuote();
+if (isUnlocked) { renderProducts(); renderQuote(); }
 </script>
 </body>
 </html>
