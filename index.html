@@ -96,8 +96,8 @@ nav a:hover{color:#fff}
 .product-card{background:#fff;border:1.5px solid transparent;border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .18s;position:relative;display:flex;flex-direction:column}
 .product-card:hover{border-color:var(--teal);box-shadow:var(--shadow);transform:translateY(-1px)}
 .product-card.in-cart{border-color:var(--teal);background:#f0fafa}
-.product-img-wrap{width:100%;height:130px;background:var(--cream);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.product-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.product-img-wrap{width:100%;height:150px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;padding:12px}
+.product-img-wrap img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;padding:4px}
 .product-img-wrap .p-icon{font-size:40px;position:absolute}
 .product-img-wrap img.loaded + .p-icon{display:none}
 .in-cart-badge{position:absolute;top:8px;right:8px;width:24px;height:24px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border-radius:50%;display:none;align-items:center;justify-content:center}
@@ -337,7 +337,10 @@ footer p{font-size:11px;color:rgba(255,255,255,.45)}
     <p data-en="Enter your details to access full pricing and build your smart home quote." data-hy="Մուտքագրեք ձեր տվյալները՝ գները բացելու և գնանշում ստեղծելու համար։">Enter your details to access full pricing and build your smart home quote.</p>
     <div class="gate-form">
       <input class="gate-input" id="gateName" type="text" placeholder="Your name" data-en-placeholder="Your name" data-hy-placeholder="Ձեր անունը"/>
-      <input class="gate-input" id="gateEmail" type="email" placeholder="Your email" data-en-placeholder="Your email" data-hy-placeholder="Ձեր էլ-փոստը"/>
+      <div style="position:relative">
+        <input class="gate-input" id="gateEmail" type="text" placeholder="Your email" data-en-placeholder="Your email" data-hy-placeholder="Ձեր էլ-փոստը" oninput="validateEmailField(this,'gateEmailMsg')" style="width:100%"/>
+        <div id="gateEmailMsg" style="font-size:11px;font-weight:600;margin-top:4px;min-height:16px;"></div>
+      </div>
       <label class="gate-check">
         <input type="checkbox" id="gateTerms"/>
         <span data-en="I agree to the <a href='#'>Terms of Service</a> and <a href='#'>Privacy Policy</a>" data-hy="Համաձայն եմ <a href='#'>Ծառայության Պայմաններին</a> և <a href='#'>Գաղտնիության Քաղաքականությանը</a>">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
@@ -369,7 +372,7 @@ footer p{font-size:11px;color:rgba(255,255,255,.45)}
     </div>
     <div class="form-row">
       <div class="form-group"><label data-en="Phone" data-hy="Հեռախոս">Phone</label><input type="tel" id="reqPhone" placeholder="+374…"/></div>
-      <div class="form-group"><label data-en="Email" data-hy="Էլ-փոստ">Email</label><input type="email" id="reqEmail" placeholder="you@email.com"/></div>
+      <div class="form-group"><label data-en="Email" data-hy="Էլ-փոստ">Email</label><input type="text" id="reqEmail" placeholder="you@email.com" oninput="validateEmailField(this,'reqEmailMsg')"/><div id="reqEmailMsg" style="font-size:11px;font-weight:600;margin-top:3px;min-height:14px;"></div></div>
     </div>
     <div class="form-row full">
       <div class="form-group"><label data-en="Notes (optional)" data-hy="Նշումներ (կամընտիր)">Notes (optional)</label><textarea rows="3" id="reqNotes" placeholder="Apartment size, specific requirements…"></textarea></div>
@@ -383,10 +386,19 @@ footer p{font-size:11px;color:rgba(255,255,255,.45)}
 
 <!-- ADMIN PANEL (Ctrl+Shift+A) -->
 <div class="admin-panel" id="adminPanel">
-  <button class="admin-close-btn" onclick="document.getElementById('adminPanel').style.display='none'">×</button>
-  <h4>📊 Admin — Email List</h4>
-  <p id="adminCount">0 emails collected</p>
-  <button class="admin-dl-btn" onclick="downloadEmails()">⬇ Download CSV</button>
+  <button class="admin-close-btn" onclick="closeAdmin()">×</button>
+  <div id="adminLock">
+    <h4>🔒 Admin Access</h4>
+    <p style="margin-bottom:10px">Enter admin password:</p>
+    <input id="adminPwInput" type="password" placeholder="Password" style="width:100%;padding:8px 10px;border-radius:6px;border:none;font-family:Montserrat,sans-serif;font-size:13px;margin-bottom:8px" onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+    <div id="adminPwErr" style="font-size:11px;color:#ff8080;min-height:14px;margin-bottom:6px"></div>
+    <button class="admin-dl-btn" onclick="checkAdminPw()">Unlock →</button>
+  </div>
+  <div id="adminDash" style="display:none">
+    <h4>📊 Admin — Leads</h4>
+    <p id="adminCount" style="margin-bottom:12px">0 emails collected</p>
+    <button class="admin-dl-btn" onclick="downloadEmails()">⬇ Download CSV</button>
+  </div>
 </div>
 
 <script>
@@ -525,29 +537,85 @@ let activeCategory = 'all';
 let searchQuery = '';
 let isUnlocked = sessionStorage.getItem('zigoUnlocked') === '1';
 
+// ── EMAIL VALIDATION ──
+function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); }
+function validateEmailField(input, msgId) {
+  const v = input.value.trim();
+  const msgEl = document.getElementById(msgId);
+  if (!v) { msgEl.textContent = ''; input.style.borderColor = ''; return; }
+  if (!isValidEmail(v)) {
+    const hint = lang === 'hy' ? '⚠ Սա տեքստ է, խնդրում ենք գրեք Էլ-փոստ (օրինակ՝ name@email.com)' : '⚠ This looks like plain text — please write a valid email (e.g. name@email.com)';
+    msgEl.style.color = '#c0392b';
+    msgEl.textContent = hint;
+    input.style.borderColor = '#c0392b';
+  } else {
+    msgEl.style.color = '#086063';
+    msgEl.textContent = lang === 'hy' ? '✓ Վավեր Էլ-փոստ' : '✓ Valid email';
+    input.style.borderColor = '#086063';
+  }
+}
+
 // ── EMAIL STORAGE ──
 function saveEmail(name, email) {
   let emails = JSON.parse(localStorage.getItem('zigoEmails') || '[]');
-  emails.push({ name, email, date: new Date().toISOString() });
+  // Record page/referrer so we know where they came from
+  const source = document.referrer || window.location.href;
+  const page = window.location.pathname || '/';
+  emails.push({ name, email, date: new Date().toISOString(), page, source });
   localStorage.setItem('zigoEmails', JSON.stringify(emails));
 }
+
 function downloadEmails() {
   const emails = JSON.parse(localStorage.getItem('zigoEmails') || '[]');
   if (!emails.length) { alert('No emails collected yet.'); return; }
-  const csv = 'Name,Email,Date\n' + emails.map(e => `"${e.name}","${e.email}","${e.date}"`).join('\n');
+  // CSV: Email | Name | Date (formatted) | Page
+  const header = 'Email,Name,Date,Page';
+  const rows = emails.map(e => {
+    const d = new Date(e.date);
+    const dateStr = d.toLocaleDateString('en-GB') + ' ' + d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+    return `"${e.email}","${e.name || ''}","${dateStr}","${e.page || '/'}"`;
+  });
+  const csv = header + '\n' + rows.join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'zigo_leads_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
 }
 
-// Admin shortcut
+// ── ADMIN PANEL ──
+const ADMIN_PW = 'zigo2024';
+let adminUnlocked = false;
+
+function closeAdmin() {
+  document.getElementById('adminPanel').style.display = 'none';
+  // Reset lock on close
+  adminUnlocked = false;
+  document.getElementById('adminLock').style.display = 'block';
+  document.getElementById('adminDash').style.display = 'none';
+  document.getElementById('adminPwInput').value = '';
+  document.getElementById('adminPwErr').textContent = '';
+}
+
+function checkAdminPw() {
+  const pw = document.getElementById('adminPwInput').value;
+  if (pw === ADMIN_PW) {
+    adminUnlocked = true;
+    document.getElementById('adminLock').style.display = 'none';
+    document.getElementById('adminDash').style.display = 'block';
+    const emails = JSON.parse(localStorage.getItem('zigoEmails') || '[]');
+    document.getElementById('adminCount').textContent = emails.length + ' lead(s) collected';
+  } else {
+    document.getElementById('adminPwErr').textContent = 'Incorrect password. Try again.';
+    document.getElementById('adminPwInput').value = '';
+    document.getElementById('adminPwInput').focus();
+  }
+}
+
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.shiftKey && e.key === 'A') {
     const p = document.getElementById('adminPanel');
-    const emails = JSON.parse(localStorage.getItem('zigoEmails') || '[]');
-    document.getElementById('adminCount').textContent = emails.length + ' email(s) collected';
-    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    if (p.style.display === 'block') { closeAdmin(); }
+    else { p.style.display = 'block'; setTimeout(()=>document.getElementById('adminPwInput').focus(), 50); }
   }
 });
 
@@ -561,7 +629,7 @@ function submitGate() {
   const email = document.getElementById('gateEmail').value.trim();
   const terms = document.getElementById('gateTerms').checked;
   if (!name) { alert(lang==='hy'?'Մուտքագրեք ձեր անունը':'Please enter your name'); return; }
-  if (!email || !/\S+@\S+\.\S+/.test(email)) { alert(lang==='hy'?'Մուտքագրեք վավեր էլ-փոստ':'Please enter a valid email'); return; }
+  if (!email || !isValidEmail(email)) { alert(lang==='hy'?'Մուտքագրեք վավեր էլ-փոստ (օրինակ՝ name@email.com)':'Please enter a valid email address (e.g. name@email.com)'); return; }
   if (!terms) { alert(lang==='hy'?'Համաձայնեք պայմաններին':'Please agree to the terms'); return; }
   saveEmail(name, email);
   isUnlocked = true;
