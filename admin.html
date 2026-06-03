@@ -373,6 +373,20 @@ tr:hover td { background: rgba(8,96,99,0.06); }
       </div>
     </div>
 
+    <!-- GITHUB TOKEN SETUP -->
+    <div class="card" id="token-card">
+      <div class="card-title">🔐 Connect Storage (one-time setup)</div>
+      <div class="card-sub">Enter your GitHub token to save links across all devices. Stored only in your browser — never sent to anyone.</div>
+      <div class="ntfy-row">
+        <div class="form-group">
+          <label>GitHub Personal Access Token</label>
+          <input type="password" id="gh-token-input" placeholder="ghp_..." oninput="checkTokenCard()">
+        </div>
+        <button class="btn-gen" onclick="saveGhToken()">Connect</button>
+      </div>
+      <div class="ntfy-status" id="token-status"></div>
+    </div>
+
     <!-- GENERATE LINK -->
     <div class="card">
       <div class="card-title">Generate Tracking Link</div>
@@ -473,6 +487,49 @@ const GA_ID = 'G-LR8XLGB6QR';
 const STORAGE_KEY = 'zigo_links';
 const SESSION_KEY = 'zigo_admin_session';
 
+// ── GITHUB STORAGE ────────────────────────────────────────────
+const GH_REPO = 'ani0813/zigo-smart-home';
+const GH_FILE = 'links.json';
+const GH_API  = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_FILE;
+const GH_TOKEN_KEY = 'zigo_gh_token';
+function getGhToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+
+let _ghSha = null; // tracks current file SHA for updates
+
+async function ghLoad() {
+  const token = getGhToken();
+  if (!token) return null;
+  try {
+    const res = await fetch(GH_API + '?t=' + Date.now(), {
+      headers: { Authorization: 'token ' + token }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    _ghSha = data.sha;
+    return JSON.parse(atob(data.content.replace(/\n/g, ''))).links || [];
+  } catch(e) { return null; }
+}
+
+async function ghSave(links) {
+  const token = getGhToken();
+  if (!token) return;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify({ links }, null, 2))));
+  const body = { message: 'update links', content };
+  if (_ghSha) body.sha = _ghSha;
+  try {
+    const res = await fetch(GH_API, {
+      method: 'PUT',
+      headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      const d = await res.json();
+      _ghSha = d.content.sha;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+    }
+  } catch(e) {}
+}
+
 // ── AUTH ──────────────────────────────────────────────────────
 function doLogin() {
   const pwd = document.getElementById('pwd-input').value;
@@ -490,10 +547,16 @@ function doLogout() {
   location.reload();
 }
 
-function showApp() {
+async function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
+  checkTokenCard();
   loadNtfyTopic();
+  // Load from GitHub first, fall back to localStorage cache
+  const ghLinks = await ghLoad();
+  if (ghLinks !== null) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ghLinks));
+  }
   renderTable();
   updateStats();
   loadNotifications();
@@ -503,12 +566,13 @@ function showApp() {
 function getLinks() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; }
 }
-function saveLinks(links) {
+async function saveLinks(links) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+  await ghSave(links);
 }
 
 // ── GENERATE ──────────────────────────────────────────────────
-function generateLink() {
+async function generateLink() {
   const name = document.getElementById('person-name').value.trim();
   if (!name) { toast('Enter a person\'s name first'); return; }
   const lang = document.getElementById('link-lang').value;
@@ -521,7 +585,7 @@ function generateLink() {
   const exists = links.find(l => l.name === name);
   if (!exists) {
     links.unshift({ name, code, url, created: new Date().toISOString() });
-    saveLinks(links);
+    await saveLinks(links);
   }
 
   // Show result
@@ -576,11 +640,11 @@ function copyLink(i) {
   navigator.clipboard.writeText(links[i].url).then(() => toast('Link copied — ' + links[i].name));
 }
 
-function deleteLink(i) {
+async function deleteLink(i) {
   const links = getLinks();
   const name = links[i].name;
   links.splice(i, 1);
-  saveLinks(links);
+  await saveLinks(links);
   renderTable();
   updateStats();
   toast('Deleted link for ' + name);
@@ -669,6 +733,41 @@ async function loadNotifications() {
     }).join('');
   } catch(e) {
     area.innerHTML = '<div class="empty-state" style="padding:24px;">Could not load notifications. Check your topic name.</div>';
+  }
+}
+
+// ── TOKEN SETUP ───────────────────────────────────────────────
+function checkTokenCard() {
+  const token = localStorage.getItem(GH_TOKEN_KEY);
+  const card = document.getElementById('token-card');
+  if (token) {
+    card.style.display = 'none';
+  } else {
+    card.style.display = 'block';
+  }
+}
+
+async function saveGhToken() {
+  const val = document.getElementById('gh-token-input').value.trim();
+  if (!val) { toast('Paste your token first'); return; }
+  localStorage.setItem(GH_TOKEN_KEY, val);
+  const el = document.getElementById('token-status');
+  el.innerHTML = 'Connecting…';
+  el.className = 'ntfy-status info';
+  el.style.display = 'block';
+  const links = await ghLoad();
+  if (links !== null) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+    el.innerHTML = '✅ Connected! Links synced across all devices.';
+    el.className = 'ntfy-status ok';
+    document.getElementById('token-card').style.display = 'none';
+    renderTable();
+    updateStats();
+    toast('Storage connected!');
+  } else {
+    el.innerHTML = '❌ Could not connect. Check your token has <strong>repo</strong> or <strong>contents:write</strong> scope.';
+    el.className = 'ntfy-status';
+    el.style.cssText += 'background:rgba(180,40,40,0.1);color:#e05a5a;border:1px solid rgba(180,40,40,0.2);display:block;';
   }
 }
 
