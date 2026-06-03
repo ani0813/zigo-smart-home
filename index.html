@@ -193,6 +193,23 @@ body:-webkit-full-screen .topbar { height: 48px; }
   .hint { display: none; }
 }
 </style>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LR8XLGB6QR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LR8XLGB6QR');
+
+  function trackSlide(slideNum, lang) {
+    gtag('event', 'slide_view', {
+      'slide_number': slideNum,
+      'language': lang,
+      'presentation': 'ZiGo Designer Pitch'
+    });
+  }
+</script>
 </head>
 <body>
 
@@ -228,6 +245,7 @@ let cur = 0;
 let slides = EN;
 
 function render() {
+  if(typeof gtag !== "undefined") trackSlide(cur+1, lang);
   const img = document.getElementById('slideImg');
   img.style.opacity = 0;
   setTimeout(() => {
