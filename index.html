@@ -203,11 +203,13 @@ body:-webkit-full-screen .topbar { height: 48px; }
   gtag('config', 'G-LR8XLGB6QR');
 
   function trackSlide(slideNum, lang) {
-    gtag('event', 'slide_view', {
+    var props = {
       'slide_number': slideNum,
       'language': lang,
       'presentation': 'ZiGo Designer Pitch'
-    });
+    };
+    if (window._zigoViewer) props['person'] = window._zigoViewer;
+    gtag('event', 'slide_view', props);
   }
 </script>
 </head>
@@ -295,6 +297,41 @@ document.addEventListener('keydown', e => {
 
 buildDots();
 render();
+// --- ZiGo Link Tracker ---
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const r = params.get('r');
+  if (!r) return;
+  try {
+    const name = atob(r);
+    // Clean the URL so the code disappears from the address bar
+    const clean = window.location.pathname;
+    window.history.replaceState({}, '', clean);
+    // Fire GA event
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'link_open', {
+        'person': name,
+        'link_code': r,
+        'presentation': 'ZiGo Designer Pitch'
+      });
+    }
+    // Also tag every slide view with this person for the session
+    window._zigoViewer = name;
+    // Send push notification via ntfy.sh
+    const topic = localStorage.getItem('zigo_ntfy_topic');
+    if (topic) {
+      fetch('https://ntfy.sh/' + topic, {
+        method: 'POST',
+        headers: {
+          'Title': '👁 ZiGo Presentation Opened',
+          'Tags': 'eyes',
+          'Priority': 'high'
+        },
+        body: name + ' just opened your ZiGo presentation'
+      }).catch(() => {});
+    }
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>
