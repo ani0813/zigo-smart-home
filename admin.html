@@ -599,11 +599,11 @@ function updateStats() {
 
 // ── NTFY ──────────────────────────────────────────────────────
 function loadNtfyTopic() {
-  const topic = localStorage.getItem('zigo_ntfy_topic');
-  if (topic) {
-    document.getElementById('ntfy-topic').value = topic;
-    showNtfyStatus('Push notifications active. Topic: <strong>' + escHtml(topic) + '</strong>', 'ok');
-  }
+  const DEFAULT_TOPIC = 'zigo-ani-track-8x4k';
+  const topic = localStorage.getItem('zigo_ntfy_topic') || DEFAULT_TOPIC;
+  localStorage.setItem('zigo_ntfy_topic', topic);
+  document.getElementById('ntfy-topic').value = topic;
+  showNtfyStatus('Push notifications active. Topic: <strong>' + escHtml(topic) + '</strong>', 'ok');
 }
 
 function saveNtfyTopic() {
