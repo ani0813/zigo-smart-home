@@ -290,6 +290,27 @@ tr:hover td { background: rgba(8,96,99,0.06); }
 .stat-num { font-size: 32px; font-weight: 800; color: #086063; }
 .stat-label { font-size: 11px; color: rgba(237,226,220,0.4); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
+
+/* NOTIFICATIONS */
+.notif-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-dot {
+  width: 8px; height: 8px;
+  background: #086063;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.notif-body { flex: 1; }
+.notif-name { font-size: 14px; font-weight: 600; color: #EDE2DC; }
+.notif-msg { font-size: 12px; color: rgba(237,226,220,0.45); margin-top: 2px; }
+.notif-time { font-size: 11px; color: rgba(237,226,220,0.3); white-space: nowrap; }
+
 /* TOAST */
 .toast {
   position: fixed;
@@ -329,8 +350,7 @@ tr:hover td { background: rgba(8,96,99,0.06); }
   <div class="topbar">
     <span class="topbar-logo">ZiGO Link Manager</span>
     <div class="topbar-right">
-      <a href="https://analytics.google.com" target="_blank">Google Analytics ↗</a>
-      <a href="https://ani0813.github.io/zigo-smart-home/" target="_blank">View Site ↗</a>
+<a href="https://ani0813.github.io/zigo-smart-home/" target="_blank">View Site ↗</a>
       <button class="logout-btn" onclick="doLogout()">Log out</button>
     </div>
   </div>
@@ -408,7 +428,7 @@ tr:hover td { background: rgba(8,96,99,0.06); }
       <div class="table-header">
         <div>
           <div class="card-title">All Links</div>
-          <div class="card-sub" style="margin-bottom:0">Click "Copy" to share — click "GA" to see that person's activity in Google Analytics</div>
+          <div class="card-sub" style="margin-bottom:0">Click "Copy" to share a link. All opens appear in the Notifications log below.</div>
         </div>
         <span class="badge" id="link-count-badge">0 links</span>
       </div>
@@ -425,6 +445,20 @@ tr:hover td { background: rgba(8,96,99,0.06); }
           <tr><td colspan="4"><div class="empty-state">No links yet. Generate your first one above.</div></td></tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- NOTIFICATIONS LOG -->
+    <div class="card">
+      <div class="table-header">
+        <div>
+          <div class="card-title">Notifications Log</div>
+          <div class="card-sub" style="margin-bottom:0">Everyone who opened a tracking link — pulled live from ntfy.sh</div>
+        </div>
+        <button class="btn-gen" style="padding:8px 18px;font-size:12px;" onclick="loadNotifications()">Refresh</button>
+      </div>
+      <div id="notif-area">
+        <div class="empty-state" style="padding:24px;">Set up your ntfy topic above to see notifications here.</div>
+      </div>
     </div>
 
   </div>
@@ -462,6 +496,7 @@ function showApp() {
   loadNtfyTopic();
   renderTable();
   updateStats();
+  loadNotifications();
 }
 
 // ── LINKS STORAGE ─────────────────────────────────────────────
@@ -524,16 +559,13 @@ function renderTable() {
   tbody.innerHTML = links.map((l, i) => {
     const date = new Date(l.created);
     const dateStr = date.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-    const gaUrl = 'https://analytics.google.com/analytics/web/#/p' + GA_ID.replace('G-','') +
-      '/reports/explorer?params=_u..pageSize%3D25&r=all-pages-and-screens&collectionId=life-cycle';
     return `<tr>
       <td class="td-name">${escHtml(l.name)}</td>
       <td class="td-code">${escHtml(l.code.substring(0,12))}…</td>
       <td class="td-date">${dateStr}</td>
       <td><div class="td-actions">
         <button class="btn-sm btn-sm-copy" onclick="copyLink(${i})">Copy</button>
-        <a class="btn-sm btn-sm-ga" href="${gaUrl}" target="_blank">GA ↗</a>
-        <button class="btn-sm btn-sm-del" onclick="deleteLink(${i})">Delete</button>
+<button class="btn-sm btn-sm-del" onclick="deleteLink(${i})">Delete</button>
       </div></td>
     </tr>`;
   }).join('');
@@ -581,6 +613,7 @@ function saveNtfyTopic() {
   document.getElementById('ntfy-topic').value = topic;
   showNtfyStatus('Saved! Topic: <strong>' + escHtml(topic) + '</strong> — Subscribe to this in the ntfy app on your phone.', 'ok');
   updateStats();
+  loadNotifications();
   toast('Topic saved!');
 }
 
@@ -601,6 +634,42 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+
+// ── NOTIFICATIONS ────────────────────────────────────────────
+async function loadNotifications() {
+  const topic = localStorage.getItem('zigo_ntfy_topic');
+  const area = document.getElementById('notif-area');
+  if (!topic) {
+    area.innerHTML = '<div class="empty-state" style="padding:24px;">Set up your ntfy topic above to see notifications here.</div>';
+    return;
+  }
+  area.innerHTML = '<div class="empty-state" style="padding:24px;">Loading...</div>';
+  try {
+    const res = await fetch('https://ntfy.sh/' + topic + '/json?poll=1&since=30d');
+    const text = await res.text();
+    const msgs = text.trim().split('\n').filter(Boolean).map(l => JSON.parse(l)).reverse();
+    if (msgs.length === 0) {
+      area.innerHTML = '<div class="empty-state" style="padding:24px;">No notifications yet. Send a tracking link to get started.</div>';
+      return;
+    }
+    area.innerHTML = msgs.map(m => {
+      const d = new Date(m.time * 1000);
+      const timeStr = d.toLocaleDateString('en-GB', {day:'numeric',month:'short'}) + ' · ' +
+        d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+      return '<div class="notif-item">' +
+        '<div class="notif-dot"></div>' +
+        '<div class="notif-body">' +
+          '<div class="notif-name">' + escHtml(m.message || '') + '</div>' +
+          '<div class="notif-msg">' + escHtml(m.title || 'ZiGo Presentation Opened') + '</div>' +
+        '</div>' +
+        '<div class="notif-time">' + timeStr + '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    area.innerHTML = '<div class="empty-state" style="padding:24px;">Could not load notifications. Check your topic name.</div>';
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────────
