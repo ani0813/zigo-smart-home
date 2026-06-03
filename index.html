@@ -318,7 +318,7 @@ render();
     // Also tag every slide view with this person for the session
     window._zigoViewer = name;
     // Send push notification via ntfy.sh
-    const topic = localStorage.getItem('zigo_ntfy_topic');
+    const topic = 'zigo-ani-track-8x4k';
     if (topic) {
       fetch('https://ntfy.sh/' + topic, {
         method: 'POST',
